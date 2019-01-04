@@ -7,6 +7,7 @@ import Eval.Function exposing (Function(..))
 import Eval.Try as Try
 import Eval.Wrap as Wrap
 import Eval.Core.Error as Error
+import Eval.Core.List
 
 -- Core
 import Json.Decode exposing (Value)
@@ -256,6 +257,9 @@ lib fName =
 
     "(>>)" ->
       Err (Error.noFunction fName)
+
+    "(::)" ->
+      Eval.Core.List.lib fName
 
     _ ->
       Err (

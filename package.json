@@ -1,7 +1,7 @@
 {
   "name": "node-elm-eval",
   "version": "1.0.0",
-  "description": "",
+  "description": "A JS/Node interface to Elm's core libraries",
   "private": true,
   "main": "index.js",
   "scripts": {

@@ -13,6 +13,7 @@ module Eval.Try exposing
   , listTuple2
   , listTuple3
   , listDict
+  , array
   , dict
   , empty
   , singleton
@@ -21,6 +22,7 @@ module Eval.Try exposing
   )
 
 
+import Array exposing (Array)
 import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Value)
 import Json.Encode as Encode
@@ -132,6 +134,12 @@ listTuple3 =
 listDict : Value -> Maybe (List (Dict String Value))
 listDict =
   Decode.decodeValue (Decode.list (Decode.dict Decode.value))
+    >> Result.toMaybe
+
+
+array : Value -> Maybe (Array Value)
+array =
+  Decode.decodeValue (Decode.array Decode.value)
     >> Result.toMaybe
 
 

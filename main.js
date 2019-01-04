@@ -1644,6 +1644,43 @@ var _Json_encodeNull = _Json_wrap(null);
 
 
 
+var _Bitwise_and = F2(function(a, b)
+{
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
+
+
+
 // TASKS
 
 function _Scheduler_succeed(value)
@@ -2583,6 +2620,13 @@ var author$project$Eval$Call$fromLib = F2(
 		}
 	});
 var author$project$Eval$call = author$project$Eval$Call$fromLib;
+var author$project$Eval$Core$Error$expected = F2(
+	function (fName, typeList) {
+		return 'Type error in arguments to `' + (fName + ('`: expected ' + (typeList + '.')));
+	});
+var author$project$Eval$Core$Error$noFunction = function (fName) {
+	return 'Functions like `' + (fName + ('` that take other functions as arguments can\'t be called through this ' + ('interface because Elm only allows primitive types, arrays, and objects ' + ('to be passed in through ports. As an alternative, you could chain ' + ('`elm-eval` function calls on the JavaScript side using promise chains ' + 'or aync/await syntax.')))));
+};
 var author$project$Eval$Core$Error$notFound = F2(
 	function (moduleName, fName) {
 		return 'A function named `' + (fName + ('` was not found in the `' + (moduleName + '` core library.')));
@@ -2590,17 +2634,33 @@ var author$project$Eval$Core$Error$notFound = F2(
 var author$project$Eval$Function$F0 = function (a) {
 	return {$: 0, a: a};
 };
-var author$project$Eval$Wrap$a0 = F3(
-	function (f, encoder, _null) {
-		return elm$core$Result$Ok(
-			encoder(
-				f(_null)));
+var author$project$Eval$Function$F1 = function (a) {
+	return {$: 1, a: a};
+};
+var author$project$Eval$Function$F2 = function (a) {
+	return {$: 2, a: a};
+};
+var author$project$Eval$Function$F3 = function (a) {
+	return {$: 3, a: a};
+};
+var elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
 	});
+var elm$core$Result$toMaybe = function (result) {
+	if (!result.$) {
+		var v = result.a;
+		return elm$core$Maybe$Just(v);
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
+var elm$core$Array$branchFactor = 32;
 var elm$core$Array$Array_elm_builtin = F4(
 	function (a, b, c, d) {
 		return {$: 0, a: a, b: b, c: c, d: d};
 	});
-var elm$core$Array$branchFactor = 32;
 var elm$core$Basics$ceiling = _Basics_ceiling;
 var elm$core$Basics$fdiv = _Basics_fdiv;
 var elm$core$Basics$logBase = F2(
@@ -2612,27 +2672,6 @@ var elm$core$Array$shiftStep = elm$core$Basics$ceiling(
 	A2(elm$core$Basics$logBase, 2, elm$core$Array$branchFactor));
 var elm$core$Elm$JsArray$empty = _JsArray_empty;
 var elm$core$Array$empty = A4(elm$core$Array$Array_elm_builtin, 0, elm$core$Array$shiftStep, elm$core$Elm$JsArray$empty, elm$core$Elm$JsArray$empty);
-var elm$core$Elm$JsArray$foldl = _JsArray_foldl;
-var elm$core$Array$foldl = F3(
-	function (func, baseCase, _n0) {
-		var tree = _n0.c;
-		var tail = _n0.d;
-		var helper = F2(
-			function (node, acc) {
-				if (!node.$) {
-					var subTree = node.a;
-					return A3(elm$core$Elm$JsArray$foldl, helper, acc, subTree);
-				} else {
-					var values = node.a;
-					return A3(elm$core$Elm$JsArray$foldl, func, acc, values);
-				}
-			});
-		return A3(
-			elm$core$Elm$JsArray$foldl,
-			func,
-			A3(elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
-			tail);
-	});
 var elm$core$Array$Leaf = function (a) {
 	return {$: 1, a: a};
 };
@@ -2964,81 +3003,31 @@ var elm$json$Json$Decode$errorToStringHelp = F2(
 			}
 		}
 	});
-var elm$json$Json$Encode$array = F2(
-	function (func, entries) {
-		return _Json_wrap(
-			A3(
-				elm$core$Array$foldl,
-				_Json_addEntry(func),
-				_Json_emptyArray(0),
-				entries));
-	});
-var author$project$Eval$Core$Array$lib = function (fName) {
-	if (fName === 'empty') {
-		return elm$core$Result$Ok(
-			author$project$Eval$Function$F0(
-				A2(
-					author$project$Eval$Wrap$a0,
-					function (_n1) {
-						return elm$core$Array$empty;
-					},
-					elm$json$Json$Encode$array(
-						function (v) {
-							return v;
-						}))));
-	} else {
-		return elm$core$Result$Err(
-			A2(author$project$Eval$Core$Error$notFound, 'Array', fName));
-	}
-};
-var author$project$Eval$Core$Error$expected = F2(
-	function (fName, typeList) {
-		return 'Type error in arguments to `' + (fName + ('`: expected ' + (typeList + '.')));
-	});
-var author$project$Eval$Core$Error$noCompare = function (fName) {
-	return 'Comparison functions like `' + (fName + ('` can\'t be called through this interface because Elm doesn\'t support ' + 'type inference on JavaScript values passed in through ports.'));
-};
-var author$project$Eval$Core$Error$noFunction = function (fName) {
-	return 'Functions like `' + (fName + ('` that take other functions as arguments can\'t be called through this ' + ('interface because Elm only allows primitive types, arrays, and objects ' + ('to be passed in through ports. As an alternative, you could chain ' + ('`elm-eval` function calls on the JavaScript side using promise chains ' + 'or aync/await syntax.')))));
-};
-var author$project$Eval$Function$F1 = function (a) {
-	return {$: 1, a: a};
-};
-var author$project$Eval$Function$F2 = function (a) {
-	return {$: 2, a: a};
-};
-var author$project$Eval$Function$F3 = function (a) {
-	return {$: 3, a: a};
-};
-var elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
-var elm$core$Result$toMaybe = function (result) {
-	if (!result.$) {
-		var v = result.a;
-		return elm$core$Maybe$Just(v);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var elm$json$Json$Decode$bool = _Json_decodeBool;
+var elm$json$Json$Decode$array = _Json_decodeArray;
 var elm$json$Json$Decode$decodeValue = _Json_run;
-var author$project$Eval$Try$bool = A2(
+var elm$json$Json$Decode$value = _Json_decodeValue;
+var author$project$Eval$Try$array = A2(
 	elm$core$Basics$composeR,
-	elm$json$Json$Decode$decodeValue(elm$json$Json$Decode$bool),
-	elm$core$Result$toMaybe);
-var elm$json$Json$Decode$float = _Json_decodeFloat;
-var author$project$Eval$Try$float = A2(
-	elm$core$Basics$composeR,
-	elm$json$Json$Decode$decodeValue(elm$json$Json$Decode$float),
+	elm$json$Json$Decode$decodeValue(
+		elm$json$Json$Decode$array(elm$json$Json$Decode$value)),
 	elm$core$Result$toMaybe);
 var elm$json$Json$Decode$int = _Json_decodeInt;
 var author$project$Eval$Try$int = A2(
 	elm$core$Basics$composeR,
 	elm$json$Json$Decode$decodeValue(elm$json$Json$Decode$int),
 	elm$core$Result$toMaybe);
+var elm$json$Json$Decode$list = _Json_decodeList;
+var author$project$Eval$Try$list = A2(
+	elm$core$Basics$composeR,
+	elm$json$Json$Decode$decodeValue(
+		elm$json$Json$Decode$list(elm$json$Json$Decode$value)),
+	elm$core$Result$toMaybe);
+var author$project$Eval$Wrap$a0 = F3(
+	function (f, encoder, _null) {
+		return elm$core$Result$Ok(
+			encoder(
+				f(_null)));
+	});
 var elm$core$Maybe$map = F2(
 	function (f, maybe) {
 		if (!maybe.$) {
@@ -3136,6 +3125,1351 @@ var author$project$Eval$Wrap$a3 = F5(
 					db(b),
 					dc(c))));
 	});
+var elm$core$Elm$JsArray$appendN = _JsArray_appendN;
+var elm$core$Elm$JsArray$slice = _JsArray_slice;
+var elm$core$Array$appendHelpBuilder = F2(
+	function (tail, builder) {
+		var tailLen = elm$core$Elm$JsArray$length(tail);
+		var notAppended = (elm$core$Array$branchFactor - elm$core$Elm$JsArray$length(builder.b)) - tailLen;
+		var appended = A3(elm$core$Elm$JsArray$appendN, elm$core$Array$branchFactor, builder.b, tail);
+		return (notAppended < 0) ? {
+			c: A2(
+				elm$core$List$cons,
+				elm$core$Array$Leaf(appended),
+				builder.c),
+			a: builder.a + 1,
+			b: A3(elm$core$Elm$JsArray$slice, notAppended, tailLen, tail)
+		} : ((!notAppended) ? {
+			c: A2(
+				elm$core$List$cons,
+				elm$core$Array$Leaf(appended),
+				builder.c),
+			a: builder.a + 1,
+			b: elm$core$Elm$JsArray$empty
+		} : {c: builder.c, a: builder.a, b: appended});
+	});
+var elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var elm$core$Array$bitMask = 4294967295 >>> (32 - elm$core$Array$shiftStep);
+var elm$core$Basics$ge = _Utils_ge;
+var elm$core$Bitwise$and = _Bitwise_and;
+var elm$core$Elm$JsArray$push = _JsArray_push;
+var elm$core$Elm$JsArray$singleton = _JsArray_singleton;
+var elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
+var elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
+var elm$core$Array$insertTailInTree = F4(
+	function (shift, index, tail, tree) {
+		var pos = elm$core$Array$bitMask & (index >>> shift);
+		if (_Utils_cmp(
+			pos,
+			elm$core$Elm$JsArray$length(tree)) > -1) {
+			if (shift === 5) {
+				return A2(
+					elm$core$Elm$JsArray$push,
+					elm$core$Array$Leaf(tail),
+					tree);
+			} else {
+				var newSub = elm$core$Array$SubTree(
+					A4(elm$core$Array$insertTailInTree, shift - elm$core$Array$shiftStep, index, tail, elm$core$Elm$JsArray$empty));
+				return A2(elm$core$Elm$JsArray$push, newSub, tree);
+			}
+		} else {
+			var value = A2(elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (!value.$) {
+				var subTree = value.a;
+				var newSub = elm$core$Array$SubTree(
+					A4(elm$core$Array$insertTailInTree, shift - elm$core$Array$shiftStep, index, tail, subTree));
+				return A3(elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
+			} else {
+				var newSub = elm$core$Array$SubTree(
+					A4(
+						elm$core$Array$insertTailInTree,
+						shift - elm$core$Array$shiftStep,
+						index,
+						tail,
+						elm$core$Elm$JsArray$singleton(value)));
+				return A3(elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
+			}
+		}
+	});
+var elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var elm$core$Array$unsafeReplaceTail = F2(
+	function (newTail, _n0) {
+		var len = _n0.a;
+		var startShift = _n0.b;
+		var tree = _n0.c;
+		var tail = _n0.d;
+		var originalTailLen = elm$core$Elm$JsArray$length(tail);
+		var newTailLen = elm$core$Elm$JsArray$length(newTail);
+		var newArrayLen = len + (newTailLen - originalTailLen);
+		if (_Utils_eq(newTailLen, elm$core$Array$branchFactor)) {
+			var overflow = _Utils_cmp(newArrayLen >>> elm$core$Array$shiftStep, 1 << startShift) > 0;
+			if (overflow) {
+				var newShift = startShift + elm$core$Array$shiftStep;
+				var newTree = A4(
+					elm$core$Array$insertTailInTree,
+					newShift,
+					len,
+					newTail,
+					elm$core$Elm$JsArray$singleton(
+						elm$core$Array$SubTree(tree)));
+				return A4(elm$core$Array$Array_elm_builtin, newArrayLen, newShift, newTree, elm$core$Elm$JsArray$empty);
+			} else {
+				return A4(
+					elm$core$Array$Array_elm_builtin,
+					newArrayLen,
+					startShift,
+					A4(elm$core$Array$insertTailInTree, startShift, len, newTail, tree),
+					elm$core$Elm$JsArray$empty);
+			}
+		} else {
+			return A4(elm$core$Array$Array_elm_builtin, newArrayLen, startShift, tree, newTail);
+		}
+	});
+var elm$core$Array$appendHelpTree = F2(
+	function (toAppend, array) {
+		var len = array.a;
+		var tree = array.c;
+		var tail = array.d;
+		var itemsToAppend = elm$core$Elm$JsArray$length(toAppend);
+		var notAppended = (elm$core$Array$branchFactor - elm$core$Elm$JsArray$length(tail)) - itemsToAppend;
+		var appended = A3(elm$core$Elm$JsArray$appendN, elm$core$Array$branchFactor, tail, toAppend);
+		var newArray = A2(elm$core$Array$unsafeReplaceTail, appended, array);
+		if (notAppended < 0) {
+			var nextTail = A3(elm$core$Elm$JsArray$slice, notAppended, itemsToAppend, toAppend);
+			return A2(elm$core$Array$unsafeReplaceTail, nextTail, newArray);
+		} else {
+			return newArray;
+		}
+	});
+var elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+var elm$core$Array$builderFromArray = function (_n0) {
+	var len = _n0.a;
+	var tree = _n0.c;
+	var tail = _n0.d;
+	var helper = F2(
+		function (node, acc) {
+			if (!node.$) {
+				var subTree = node.a;
+				return A3(elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+			} else {
+				return A2(elm$core$List$cons, node, acc);
+			}
+		});
+	return {
+		c: A3(elm$core$Elm$JsArray$foldl, helper, _List_Nil, tree),
+		a: (len / elm$core$Array$branchFactor) | 0,
+		b: tail
+	};
+};
+var elm$core$Array$append = F2(
+	function (a, _n0) {
+		var aTail = a.d;
+		var bLen = _n0.a;
+		var bTree = _n0.c;
+		var bTail = _n0.d;
+		if (_Utils_cmp(bLen, elm$core$Array$branchFactor * 4) < 1) {
+			var foldHelper = F2(
+				function (node, array) {
+					if (!node.$) {
+						var tree = node.a;
+						return A3(elm$core$Elm$JsArray$foldl, foldHelper, array, tree);
+					} else {
+						var leaf = node.a;
+						return A2(elm$core$Array$appendHelpTree, leaf, array);
+					}
+				});
+			return A2(
+				elm$core$Array$appendHelpTree,
+				bTail,
+				A3(elm$core$Elm$JsArray$foldl, foldHelper, a, bTree));
+		} else {
+			var foldHelper = F2(
+				function (node, builder) {
+					if (!node.$) {
+						var tree = node.a;
+						return A3(elm$core$Elm$JsArray$foldl, foldHelper, builder, tree);
+					} else {
+						var leaf = node.a;
+						return A2(elm$core$Array$appendHelpBuilder, leaf, builder);
+					}
+				});
+			return A2(
+				elm$core$Array$builderToArray,
+				true,
+				A2(
+					elm$core$Array$appendHelpBuilder,
+					bTail,
+					A3(
+						elm$core$Elm$JsArray$foldl,
+						foldHelper,
+						elm$core$Array$builderFromArray(a),
+						bTree)));
+		}
+	});
+var elm$core$Array$fromListHelp = F3(
+	function (list, nodeList, nodeListSize) {
+		fromListHelp:
+		while (true) {
+			var _n0 = A2(elm$core$Elm$JsArray$initializeFromList, elm$core$Array$branchFactor, list);
+			var jsArray = _n0.a;
+			var remainingItems = _n0.b;
+			if (_Utils_cmp(
+				elm$core$Elm$JsArray$length(jsArray),
+				elm$core$Array$branchFactor) < 0) {
+				return A2(
+					elm$core$Array$builderToArray,
+					true,
+					{c: nodeList, a: nodeListSize, b: jsArray});
+			} else {
+				var $temp$list = remainingItems,
+					$temp$nodeList = A2(
+					elm$core$List$cons,
+					elm$core$Array$Leaf(jsArray),
+					nodeList),
+					$temp$nodeListSize = nodeListSize + 1;
+				list = $temp$list;
+				nodeList = $temp$nodeList;
+				nodeListSize = $temp$nodeListSize;
+				continue fromListHelp;
+			}
+		}
+	});
+var elm$core$Array$fromList = function (list) {
+	if (!list.b) {
+		return elm$core$Array$empty;
+	} else {
+		return A3(elm$core$Array$fromListHelp, list, _List_Nil, 0);
+	}
+};
+var elm$core$Array$getHelp = F3(
+	function (shift, index, tree) {
+		getHelp:
+		while (true) {
+			var pos = elm$core$Array$bitMask & (index >>> shift);
+			var _n0 = A2(elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (!_n0.$) {
+				var subTree = _n0.a;
+				var $temp$shift = shift - elm$core$Array$shiftStep,
+					$temp$index = index,
+					$temp$tree = subTree;
+				shift = $temp$shift;
+				index = $temp$index;
+				tree = $temp$tree;
+				continue getHelp;
+			} else {
+				var values = _n0.a;
+				return A2(elm$core$Elm$JsArray$unsafeGet, elm$core$Array$bitMask & index, values);
+			}
+		}
+	});
+var elm$core$Array$tailIndex = function (len) {
+	return (len >>> 5) << 5;
+};
+var elm$core$Array$get = F2(
+	function (index, _n0) {
+		var len = _n0.a;
+		var startShift = _n0.b;
+		var tree = _n0.c;
+		var tail = _n0.d;
+		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? elm$core$Maybe$Nothing : ((_Utils_cmp(
+			index,
+			elm$core$Array$tailIndex(len)) > -1) ? elm$core$Maybe$Just(
+			A2(elm$core$Elm$JsArray$unsafeGet, elm$core$Array$bitMask & index, tail)) : elm$core$Maybe$Just(
+			A3(elm$core$Array$getHelp, startShift, index, tree)));
+	});
+var elm$core$Array$isEmpty = function (_n0) {
+	var len = _n0.a;
+	return !len;
+};
+var elm$core$Array$length = function (_n0) {
+	var len = _n0.a;
+	return len;
+};
+var elm$core$Array$push = F2(
+	function (a, array) {
+		var tail = array.d;
+		return A2(
+			elm$core$Array$unsafeReplaceTail,
+			A2(elm$core$Elm$JsArray$push, a, tail),
+			array);
+	});
+var elm$core$Array$repeat = F2(
+	function (n, e) {
+		return A2(
+			elm$core$Array$initialize,
+			n,
+			function (_n0) {
+				return e;
+			});
+	});
+var elm$core$Array$setHelp = F4(
+	function (shift, index, value, tree) {
+		var pos = elm$core$Array$bitMask & (index >>> shift);
+		var _n0 = A2(elm$core$Elm$JsArray$unsafeGet, pos, tree);
+		if (!_n0.$) {
+			var subTree = _n0.a;
+			var newSub = A4(elm$core$Array$setHelp, shift - elm$core$Array$shiftStep, index, value, subTree);
+			return A3(
+				elm$core$Elm$JsArray$unsafeSet,
+				pos,
+				elm$core$Array$SubTree(newSub),
+				tree);
+		} else {
+			var values = _n0.a;
+			var newLeaf = A3(elm$core$Elm$JsArray$unsafeSet, elm$core$Array$bitMask & index, value, values);
+			return A3(
+				elm$core$Elm$JsArray$unsafeSet,
+				pos,
+				elm$core$Array$Leaf(newLeaf),
+				tree);
+		}
+	});
+var elm$core$Array$set = F3(
+	function (index, value, array) {
+		var len = array.a;
+		var startShift = array.b;
+		var tree = array.c;
+		var tail = array.d;
+		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? array : ((_Utils_cmp(
+			index,
+			elm$core$Array$tailIndex(len)) > -1) ? A4(
+			elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			tree,
+			A3(elm$core$Elm$JsArray$unsafeSet, elm$core$Array$bitMask & index, value, tail)) : A4(
+			elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			A4(elm$core$Array$setHelp, startShift, index, value, tree),
+			tail));
+	});
+var elm$core$Array$sliceLeft = F2(
+	function (from, array) {
+		var len = array.a;
+		var tree = array.c;
+		var tail = array.d;
+		if (!from) {
+			return array;
+		} else {
+			if (_Utils_cmp(
+				from,
+				elm$core$Array$tailIndex(len)) > -1) {
+				return A4(
+					elm$core$Array$Array_elm_builtin,
+					len - from,
+					elm$core$Array$shiftStep,
+					elm$core$Elm$JsArray$empty,
+					A3(
+						elm$core$Elm$JsArray$slice,
+						from - elm$core$Array$tailIndex(len),
+						elm$core$Elm$JsArray$length(tail),
+						tail));
+			} else {
+				var skipNodes = (from / elm$core$Array$branchFactor) | 0;
+				var helper = F2(
+					function (node, acc) {
+						if (!node.$) {
+							var subTree = node.a;
+							return A3(elm$core$Elm$JsArray$foldr, helper, acc, subTree);
+						} else {
+							var leaf = node.a;
+							return A2(elm$core$List$cons, leaf, acc);
+						}
+					});
+				var leafNodes = A3(
+					elm$core$Elm$JsArray$foldr,
+					helper,
+					_List_fromArray(
+						[tail]),
+					tree);
+				var nodesToInsert = A2(elm$core$List$drop, skipNodes, leafNodes);
+				if (!nodesToInsert.b) {
+					return elm$core$Array$empty;
+				} else {
+					var head = nodesToInsert.a;
+					var rest = nodesToInsert.b;
+					var firstSlice = from - (skipNodes * elm$core$Array$branchFactor);
+					var initialBuilder = {
+						c: _List_Nil,
+						a: 0,
+						b: A3(
+							elm$core$Elm$JsArray$slice,
+							firstSlice,
+							elm$core$Elm$JsArray$length(head),
+							head)
+					};
+					return A2(
+						elm$core$Array$builderToArray,
+						true,
+						A3(elm$core$List$foldl, elm$core$Array$appendHelpBuilder, initialBuilder, rest));
+				}
+			}
+		}
+	});
+var elm$core$Array$fetchNewTail = F4(
+	function (shift, end, treeEnd, tree) {
+		fetchNewTail:
+		while (true) {
+			var pos = elm$core$Array$bitMask & (treeEnd >>> shift);
+			var _n0 = A2(elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (!_n0.$) {
+				var sub = _n0.a;
+				var $temp$shift = shift - elm$core$Array$shiftStep,
+					$temp$end = end,
+					$temp$treeEnd = treeEnd,
+					$temp$tree = sub;
+				shift = $temp$shift;
+				end = $temp$end;
+				treeEnd = $temp$treeEnd;
+				tree = $temp$tree;
+				continue fetchNewTail;
+			} else {
+				var values = _n0.a;
+				return A3(elm$core$Elm$JsArray$slice, 0, elm$core$Array$bitMask & end, values);
+			}
+		}
+	});
+var elm$core$Array$hoistTree = F3(
+	function (oldShift, newShift, tree) {
+		hoistTree:
+		while (true) {
+			if ((_Utils_cmp(oldShift, newShift) < 1) || (!elm$core$Elm$JsArray$length(tree))) {
+				return tree;
+			} else {
+				var _n0 = A2(elm$core$Elm$JsArray$unsafeGet, 0, tree);
+				if (!_n0.$) {
+					var sub = _n0.a;
+					var $temp$oldShift = oldShift - elm$core$Array$shiftStep,
+						$temp$newShift = newShift,
+						$temp$tree = sub;
+					oldShift = $temp$oldShift;
+					newShift = $temp$newShift;
+					tree = $temp$tree;
+					continue hoistTree;
+				} else {
+					return tree;
+				}
+			}
+		}
+	});
+var elm$core$Array$sliceTree = F3(
+	function (shift, endIdx, tree) {
+		var lastPos = elm$core$Array$bitMask & (endIdx >>> shift);
+		var _n0 = A2(elm$core$Elm$JsArray$unsafeGet, lastPos, tree);
+		if (!_n0.$) {
+			var sub = _n0.a;
+			var newSub = A3(elm$core$Array$sliceTree, shift - elm$core$Array$shiftStep, endIdx, sub);
+			return (!elm$core$Elm$JsArray$length(newSub)) ? A3(elm$core$Elm$JsArray$slice, 0, lastPos, tree) : A3(
+				elm$core$Elm$JsArray$unsafeSet,
+				lastPos,
+				elm$core$Array$SubTree(newSub),
+				A3(elm$core$Elm$JsArray$slice, 0, lastPos + 1, tree));
+		} else {
+			return A3(elm$core$Elm$JsArray$slice, 0, lastPos, tree);
+		}
+	});
+var elm$core$Array$sliceRight = F2(
+	function (end, array) {
+		var len = array.a;
+		var startShift = array.b;
+		var tree = array.c;
+		var tail = array.d;
+		if (_Utils_eq(end, len)) {
+			return array;
+		} else {
+			if (_Utils_cmp(
+				end,
+				elm$core$Array$tailIndex(len)) > -1) {
+				return A4(
+					elm$core$Array$Array_elm_builtin,
+					end,
+					startShift,
+					tree,
+					A3(elm$core$Elm$JsArray$slice, 0, elm$core$Array$bitMask & end, tail));
+			} else {
+				var endIdx = elm$core$Array$tailIndex(end);
+				var depth = elm$core$Basics$floor(
+					A2(
+						elm$core$Basics$logBase,
+						elm$core$Array$branchFactor,
+						A2(elm$core$Basics$max, 1, endIdx - 1)));
+				var newShift = A2(elm$core$Basics$max, 5, depth * elm$core$Array$shiftStep);
+				return A4(
+					elm$core$Array$Array_elm_builtin,
+					end,
+					newShift,
+					A3(
+						elm$core$Array$hoistTree,
+						startShift,
+						newShift,
+						A3(elm$core$Array$sliceTree, startShift, endIdx, tree)),
+					A4(elm$core$Array$fetchNewTail, startShift, end, endIdx, tree));
+			}
+		}
+	});
+var elm$core$Array$translateIndex = F2(
+	function (index, _n0) {
+		var len = _n0.a;
+		var posIndex = (index < 0) ? (len + index) : index;
+		return (posIndex < 0) ? 0 : ((_Utils_cmp(posIndex, len) > 0) ? len : posIndex);
+	});
+var elm$core$Array$slice = F3(
+	function (from, to, array) {
+		var correctTo = A2(elm$core$Array$translateIndex, to, array);
+		var correctFrom = A2(elm$core$Array$translateIndex, from, array);
+		return (_Utils_cmp(correctFrom, correctTo) > 0) ? elm$core$Array$empty : A2(
+			elm$core$Array$sliceLeft,
+			correctFrom,
+			A2(elm$core$Array$sliceRight, correctTo, array));
+	});
+var elm$core$Array$foldl = F3(
+	function (func, baseCase, _n0) {
+		var tree = _n0.c;
+		var tail = _n0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (!node.$) {
+					var subTree = node.a;
+					return A3(elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3(elm$core$Elm$JsArray$foldl, func, acc, values);
+				}
+			});
+		return A3(
+			elm$core$Elm$JsArray$foldl,
+			func,
+			A3(elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
+			tail);
+	});
+var elm$json$Json$Encode$array = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				elm$core$Array$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(0),
+				entries));
+	});
+var elm$json$Json$Encode$bool = _Json_wrap;
+var elm$json$Json$Encode$int = _Json_wrap;
+var author$project$Eval$Core$Array$lib = function (fName) {
+	switch (fName) {
+		case 'empty':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F0(
+					A2(
+						author$project$Eval$Wrap$a0,
+						function (_n1) {
+							return elm$core$Array$empty;
+						},
+						elm$json$Json$Encode$array(
+							function (v) {
+								return v;
+							}))));
+		case 'initialize':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'repeat':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$Array$repeat,
+						_Utils_Tuple2(author$project$Eval$Try$int, elm$core$Maybe$Just),
+						elm$json$Json$Encode$array(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[integer, any]'))));
+		case 'fromList':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$Array$fromList,
+						author$project$Eval$Try$list,
+						elm$json$Json$Encode$array(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
+		case 'isEmpty':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$Array$isEmpty,
+						author$project$Eval$Try$array,
+						elm$json$Json$Encode$bool,
+						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
+		case 'length':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$Array$length,
+						author$project$Eval$Try$array,
+						elm$json$Json$Encode$int,
+						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
+		case 'get':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					function (_n2) {
+						var a = _n2.a;
+						var b = _n2.b;
+						var _n3 = _Utils_Tuple2(
+							author$project$Eval$Try$int(a),
+							author$project$Eval$Try$array(b));
+						if ((!_n3.a.$) && (!_n3.b.$)) {
+							var index = _n3.a.a;
+							var array = _n3.b.a;
+							var _n4 = A2(elm$core$Array$get, index, array);
+							if (!_n4.$) {
+								var value = _n4.a;
+								return elm$core$Result$Ok(value);
+							} else {
+								return elm$core$Result$Err(
+									'Can\'t get the element at index ' + (elm$core$String$fromInt(index) + (' from an array of length ' + (elm$core$String$fromInt(
+										elm$core$Array$length(array)) + '.'))));
+							}
+						} else {
+							return elm$core$Result$Err(
+								A2(author$project$Eval$Core$Error$expected, fName, '[int, array]'));
+						}
+					}));
+		case 'set':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F3(
+					function (_n5) {
+						var a = _n5.a;
+						var b = _n5.b;
+						var c = _n5.c;
+						var _n6 = _Utils_Tuple2(
+							author$project$Eval$Try$int(a),
+							author$project$Eval$Try$array(c));
+						if ((!_n6.a.$) && (!_n6.b.$)) {
+							var index = _n6.a.a;
+							var array = _n6.b.a;
+							var _n7 = A2(elm$core$Array$get, index, array);
+							if (!_n7.$) {
+								return elm$core$Result$Ok(
+									A2(
+										elm$json$Json$Encode$array,
+										function (v) {
+											return v;
+										},
+										A3(elm$core$Array$set, index, b, array)));
+							} else {
+								return elm$core$Result$Err(
+									'Can\'t set the element at index ' + (elm$core$String$fromInt(index) + (' on an array of length ' + (elm$core$String$fromInt(
+										elm$core$Array$length(array)) + '.'))));
+							}
+						} else {
+							return elm$core$Result$Err(
+								A2(author$project$Eval$Core$Error$expected, fName, '[int, any, array]'));
+						}
+					}));
+		case 'push':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$Array$push,
+						_Utils_Tuple2(elm$core$Maybe$Just, author$project$Eval$Try$array),
+						elm$json$Json$Encode$array(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[any, array]'))));
+		case 'append':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$Array$append,
+						_Utils_Tuple2(author$project$Eval$Try$array, author$project$Eval$Try$array),
+						elm$json$Json$Encode$array(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[array, array]'))));
+		case 'slice':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F3(
+					A4(
+						author$project$Eval$Wrap$a3,
+						elm$core$Array$slice,
+						_Utils_Tuple3(author$project$Eval$Try$int, author$project$Eval$Try$int, author$project$Eval$Try$array),
+						elm$json$Json$Encode$array(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[integer, integer, array]'))));
+		default:
+			return elm$core$Result$Err(
+				A2(author$project$Eval$Core$Error$notFound, 'Array', fName));
+	}
+};
+var author$project$Eval$Core$Error$noCompare = function (fName) {
+	return 'Comparison functions like `' + (fName + ('` can\'t be called through this interface because Elm doesn\'t support ' + 'type inference on JavaScript values passed in through ports.'));
+};
+var elm$json$Json$Decode$float = _Json_decodeFloat;
+var author$project$Eval$Try$listFloat = A2(
+	elm$core$Basics$composeR,
+	elm$json$Json$Decode$decodeValue(
+		elm$json$Json$Decode$list(elm$json$Json$Decode$float)),
+	elm$core$Result$toMaybe);
+var author$project$Eval$Try$listList = A2(
+	elm$core$Basics$composeR,
+	elm$json$Json$Decode$decodeValue(
+		elm$json$Json$Decode$list(
+			elm$json$Json$Decode$list(elm$json$Json$Decode$value))),
+	elm$core$Result$toMaybe);
+var elm$core$List$foldrHelper = F4(
+	function (fn, acc, ctr, ls) {
+		if (!ls.b) {
+			return acc;
+		} else {
+			var a = ls.a;
+			var r1 = ls.b;
+			if (!r1.b) {
+				return A2(fn, a, acc);
+			} else {
+				var b = r1.a;
+				var r2 = r1.b;
+				if (!r2.b) {
+					return A2(
+						fn,
+						a,
+						A2(fn, b, acc));
+				} else {
+					var c = r2.a;
+					var r3 = r2.b;
+					if (!r3.b) {
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(fn, c, acc)));
+					} else {
+						var d = r3.a;
+						var r4 = r3.b;
+						var res = (ctr > 500) ? A3(
+							elm$core$List$foldl,
+							fn,
+							acc,
+							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(
+									fn,
+									c,
+									A2(fn, d, res))));
+					}
+				}
+			}
+		}
+	});
+var elm$core$List$foldr = F3(
+	function (fn, acc, ls) {
+		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
+	});
+var elm$core$List$map = F2(
+	function (f, xs) {
+		return A3(
+			elm$core$List$foldr,
+			F2(
+				function (x, acc) {
+					return A2(
+						elm$core$List$cons,
+						f(x),
+						acc);
+				}),
+			_List_Nil,
+			xs);
+	});
+var elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (!maybeValue.$) {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return elm$core$Maybe$Nothing;
+		}
+	});
+var elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var elm$json$Json$Encode$null = _Json_encodeNull;
+var author$project$Eval$Try$listTuple2 = function () {
+	var resolveMaybes = function (ls) {
+		var _n0 = A2(elm$core$List$member, elm$core$Maybe$Nothing, ls);
+		if (_n0) {
+			return elm$core$Maybe$Nothing;
+		} else {
+			return elm$core$Maybe$Just(
+				A2(
+					elm$core$List$map,
+					elm$core$Maybe$withDefault(
+						_Utils_Tuple2(elm$json$Json$Encode$null, elm$json$Json$Encode$null)),
+					ls));
+		}
+	};
+	return A2(
+		elm$core$Basics$composeR,
+		author$project$Eval$Try$listList,
+		A2(
+			elm$core$Basics$composeR,
+			elm$core$Maybe$map(
+				elm$core$List$map(author$project$Eval$Try$tuple2)),
+			elm$core$Maybe$andThen(resolveMaybes)));
+}();
+var elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3(elm$core$List$foldr, elm$core$List$cons, ys, xs);
+		}
+	});
+var elm$core$List$concat = function (lists) {
+	return A3(elm$core$List$foldr, elm$core$List$append, _List_Nil, lists);
+};
+var elm$core$List$intersperse = F2(
+	function (sep, xs) {
+		if (!xs.b) {
+			return _List_Nil;
+		} else {
+			var hd = xs.a;
+			var tl = xs.b;
+			var step = F2(
+				function (x, rest) {
+					return A2(
+						elm$core$List$cons,
+						sep,
+						A2(elm$core$List$cons, x, rest));
+				});
+			var spersed = A3(elm$core$List$foldr, step, _List_Nil, tl);
+			return A2(elm$core$List$cons, hd, spersed);
+		}
+	});
+var elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var elm$core$List$product = function (numbers) {
+	return A3(elm$core$List$foldl, elm$core$Basics$mul, 1, numbers);
+};
+var elm$core$List$repeatHelp = F3(
+	function (result, n, value) {
+		repeatHelp:
+		while (true) {
+			if (n <= 0) {
+				return result;
+			} else {
+				var $temp$result = A2(elm$core$List$cons, value, result),
+					$temp$n = n - 1,
+					$temp$value = value;
+				result = $temp$result;
+				n = $temp$n;
+				value = $temp$value;
+				continue repeatHelp;
+			}
+		}
+	});
+var elm$core$List$repeat = F2(
+	function (n, value) {
+		return A3(elm$core$List$repeatHelp, _List_Nil, n, value);
+	});
+var elm$core$List$sum = function (numbers) {
+	return A3(elm$core$List$foldl, elm$core$Basics$add, 0, numbers);
+};
+var elm$core$List$takeReverse = F3(
+	function (n, list, kept) {
+		takeReverse:
+		while (true) {
+			if (n <= 0) {
+				return kept;
+			} else {
+				if (!list.b) {
+					return kept;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs,
+						$temp$kept = A2(elm$core$List$cons, x, kept);
+					n = $temp$n;
+					list = $temp$list;
+					kept = $temp$kept;
+					continue takeReverse;
+				}
+			}
+		}
+	});
+var elm$core$List$takeTailRec = F2(
+	function (n, list) {
+		return elm$core$List$reverse(
+			A3(elm$core$List$takeReverse, n, list, _List_Nil));
+	});
+var elm$core$List$takeFast = F3(
+	function (ctr, n, list) {
+		if (n <= 0) {
+			return _List_Nil;
+		} else {
+			var _n0 = _Utils_Tuple2(n, list);
+			_n0$1:
+			while (true) {
+				_n0$5:
+				while (true) {
+					if (!_n0.b.b) {
+						return list;
+					} else {
+						if (_n0.b.b.b) {
+							switch (_n0.a) {
+								case 1:
+									break _n0$1;
+								case 2:
+									var _n2 = _n0.b;
+									var x = _n2.a;
+									var _n3 = _n2.b;
+									var y = _n3.a;
+									return _List_fromArray(
+										[x, y]);
+								case 3:
+									if (_n0.b.b.b.b) {
+										var _n4 = _n0.b;
+										var x = _n4.a;
+										var _n5 = _n4.b;
+										var y = _n5.a;
+										var _n6 = _n5.b;
+										var z = _n6.a;
+										return _List_fromArray(
+											[x, y, z]);
+									} else {
+										break _n0$5;
+									}
+								default:
+									if (_n0.b.b.b.b && _n0.b.b.b.b.b) {
+										var _n7 = _n0.b;
+										var x = _n7.a;
+										var _n8 = _n7.b;
+										var y = _n8.a;
+										var _n9 = _n8.b;
+										var z = _n9.a;
+										var _n10 = _n9.b;
+										var w = _n10.a;
+										var tl = _n10.b;
+										return (ctr > 1000) ? A2(
+											elm$core$List$cons,
+											x,
+											A2(
+												elm$core$List$cons,
+												y,
+												A2(
+													elm$core$List$cons,
+													z,
+													A2(
+														elm$core$List$cons,
+														w,
+														A2(elm$core$List$takeTailRec, n - 4, tl))))) : A2(
+											elm$core$List$cons,
+											x,
+											A2(
+												elm$core$List$cons,
+												y,
+												A2(
+													elm$core$List$cons,
+													z,
+													A2(
+														elm$core$List$cons,
+														w,
+														A3(elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
+									} else {
+										break _n0$5;
+									}
+							}
+						} else {
+							if (_n0.a === 1) {
+								break _n0$1;
+							} else {
+								break _n0$5;
+							}
+						}
+					}
+				}
+				return list;
+			}
+			var _n1 = _n0.b;
+			var x = _n1.a;
+			return _List_fromArray(
+				[x]);
+		}
+	});
+var elm$core$List$take = F2(
+	function (n, list) {
+		return A3(elm$core$List$takeFast, 0, n, list);
+	});
+var elm$core$List$unzip = function (pairs) {
+	var step = F2(
+		function (_n0, _n1) {
+			var x = _n0.a;
+			var y = _n0.b;
+			var xs = _n1.a;
+			var ys = _n1.b;
+			return _Utils_Tuple2(
+				A2(elm$core$List$cons, x, xs),
+				A2(elm$core$List$cons, y, ys));
+		});
+	return A3(
+		elm$core$List$foldr,
+		step,
+		_Utils_Tuple2(_List_Nil, _List_Nil),
+		pairs);
+};
+var elm$json$Json$Encode$float = _Json_wrap;
+var elm$json$Json$Encode$list = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				elm$core$List$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(0),
+				entries));
+	});
+var author$project$Eval$Core$List$lib = function (fName) {
+	switch (fName) {
+		case 'singleton':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					function (a) {
+						return elm$core$Result$Ok(
+							A2(
+								elm$json$Json$Encode$list,
+								function (v) {
+									return v;
+								},
+								_List_fromArray(
+									[a])));
+					}));
+		case 'repeat':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$List$repeat,
+						_Utils_Tuple2(author$project$Eval$Try$int, elm$core$Maybe$Just),
+						elm$json$Json$Encode$list(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[integer, any]'))));
+		case 'range':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$List$range,
+						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$int),
+						elm$json$Json$Encode$list(elm$json$Json$Encode$int),
+						A2(author$project$Eval$Core$Error$expected, fName, '[integer, integer]'))));
+		case '(::)':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$List$cons,
+						_Utils_Tuple2(elm$core$Maybe$Just, author$project$Eval$Try$list),
+						elm$json$Json$Encode$list(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[any, array]'))));
+		case 'map':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'indexedMap':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'foldl':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'foldr':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'filter':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'filterMap':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'length':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$List$length,
+						author$project$Eval$Try$list,
+						elm$json$Json$Encode$int,
+						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
+		case 'reverse':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$List$reverse,
+						author$project$Eval$Try$list,
+						elm$json$Json$Encode$list(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
+		case 'member':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noCompare(fName));
+		case 'all':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noCompare(fName));
+		case 'any':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noCompare(fName));
+		case 'maximum':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noCompare(fName));
+		case 'minimum':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noCompare(fName));
+		case 'sum':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$List$sum,
+						author$project$Eval$Try$listFloat,
+						elm$json$Json$Encode$float,
+						A2(author$project$Eval$Core$Error$expected, fName, '[array(number)]'))));
+		case 'product':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$List$product,
+						author$project$Eval$Try$listFloat,
+						elm$json$Json$Encode$float,
+						A2(author$project$Eval$Core$Error$expected, fName, '[array(number)]'))));
+		case 'append':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$List$append,
+						_Utils_Tuple2(author$project$Eval$Try$list, author$project$Eval$Try$list),
+						elm$json$Json$Encode$list(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[array, array]'))));
+		case 'concat':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$List$concat,
+						author$project$Eval$Try$listList,
+						elm$json$Json$Encode$list(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[array(array)]'))));
+		case 'concatMap':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'intersperse':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$List$intersperse,
+						_Utils_Tuple2(elm$core$Maybe$Just, author$project$Eval$Try$list),
+						elm$json$Json$Encode$list(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[any, array]'))));
+		case 'map2':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'map3':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'map4':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'map5':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'sort':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noCompare(fName));
+		case 'sortBy':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noCompare(fName));
+		case 'sortWith':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noCompare(fName));
+		case 'isEmpty':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$List$isEmpty,
+						author$project$Eval$Try$list,
+						elm$json$Json$Encode$bool,
+						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
+		case 'head':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					function (value) {
+						var _n1 = A2(
+							elm$core$Maybe$withDefault,
+							_List_Nil,
+							author$project$Eval$Try$list(value));
+						if (!_n1.b) {
+							return elm$core$Result$Err('Can\'t return the first element of an empty array.');
+						} else {
+							var first = _n1.a;
+							return elm$core$Result$Ok(first);
+						}
+					}));
+		case 'tail':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					function (value) {
+						var _n2 = A2(
+							elm$core$Maybe$withDefault,
+							_List_Nil,
+							author$project$Eval$Try$list(value));
+						if (!_n2.b) {
+							return elm$core$Result$Err('Can\'t partition an empty array.');
+						} else {
+							var rest = _n2.b;
+							return elm$core$Result$Ok(
+								A2(
+									elm$json$Json$Encode$list,
+									function (v) {
+										return v;
+									},
+									rest));
+						}
+					}));
+		case 'take':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$List$take,
+						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$list),
+						elm$json$Json$Encode$list(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[integer, array]'))));
+		case 'drop':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F2(
+					A4(
+						author$project$Eval$Wrap$a2,
+						elm$core$List$drop,
+						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$list),
+						elm$json$Json$Encode$list(
+							function (v) {
+								return v;
+							}),
+						A2(author$project$Eval$Core$Error$expected, fName, '[integer, array]'))));
+		case 'partition':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noCompare(fName));
+		case 'unzip':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$List$unzip,
+						author$project$Eval$Try$listTuple2,
+						function (_n3) {
+							var a = _n3.a;
+							var b = _n3.b;
+							return A2(
+								elm$json$Json$Encode$list,
+								elm$json$Json$Encode$list(
+									function (v) {
+										return v;
+									}),
+								_List_fromArray(
+									[a, b]));
+						},
+						A2(author$project$Eval$Core$Error$expected, fName, '[array(array-2n)]'))));
+		default:
+			return elm$core$Result$Err(
+				A2(author$project$Eval$Core$Error$notFound, 'List', fName));
+	}
+};
+var elm$json$Json$Decode$bool = _Json_decodeBool;
+var author$project$Eval$Try$bool = A2(
+	elm$core$Basics$composeR,
+	elm$json$Json$Decode$decodeValue(elm$json$Json$Decode$bool),
+	elm$core$Result$toMaybe);
+var author$project$Eval$Try$float = A2(
+	elm$core$Basics$composeR,
+	elm$json$Json$Decode$decodeValue(elm$json$Json$Decode$float),
+	elm$core$Result$toMaybe);
 var elm$core$Basics$negate = function (n) {
 	return -n;
 };
@@ -3187,18 +4521,6 @@ var elm$core$Basics$turns = function (angleInTurns) {
 	return (2 * elm$core$Basics$pi) * angleInTurns;
 };
 var elm$core$Basics$xor = _Basics_xor;
-var elm$json$Json$Encode$bool = _Json_wrap;
-var elm$json$Json$Encode$float = _Json_wrap;
-var elm$json$Json$Encode$int = _Json_wrap;
-var elm$json$Json$Encode$list = F2(
-	function (func, entries) {
-		return _Json_wrap(
-			A3(
-				elm$core$List$foldl,
-				_Json_addEntry(func),
-				_Json_emptyArray(0),
-				entries));
-	});
 var author$project$Eval$Core$Basics$lib = function (fName) {
 	switch (fName) {
 		case '(+)':
@@ -3612,6 +4934,8 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 		case '(>>)':
 			return elm$core$Result$Err(
 				author$project$Eval$Core$Error$noFunction(fName));
+		case '(::)':
+			return author$project$Eval$Core$List$lib(fName);
 		default:
 			return elm$core$Result$Err(
 				A2(author$project$Eval$Core$Error$notFound, 'Basics', fName) + (' If you are trying to access a function in another core library, ' + 'the module name must be given first (example: `String.length`).'));
@@ -3748,7 +5072,6 @@ var elm$json$Json$Decode$dict = function (decoder) {
 		elm$core$Dict$fromList,
 		elm$json$Json$Decode$keyValuePairs(decoder));
 };
-var elm$json$Json$Decode$value = _Json_decodeValue;
 var author$project$Eval$Try$dict = A2(
 	elm$core$Basics$composeR,
 	elm$json$Json$Decode$decodeValue(
@@ -4262,647 +5585,6 @@ var author$project$Eval$Core$Dict$lib = function (fName) {
 		default:
 			return elm$core$Result$Err(
 				A2(author$project$Eval$Core$Error$notFound, 'Dict', fName));
-	}
-};
-var elm$json$Json$Decode$list = _Json_decodeList;
-var author$project$Eval$Try$list = A2(
-	elm$core$Basics$composeR,
-	elm$json$Json$Decode$decodeValue(
-		elm$json$Json$Decode$list(elm$json$Json$Decode$value)),
-	elm$core$Result$toMaybe);
-var author$project$Eval$Try$listFloat = A2(
-	elm$core$Basics$composeR,
-	elm$json$Json$Decode$decodeValue(
-		elm$json$Json$Decode$list(elm$json$Json$Decode$float)),
-	elm$core$Result$toMaybe);
-var author$project$Eval$Try$listList = A2(
-	elm$core$Basics$composeR,
-	elm$json$Json$Decode$decodeValue(
-		elm$json$Json$Decode$list(
-			elm$json$Json$Decode$list(elm$json$Json$Decode$value))),
-	elm$core$Result$toMaybe);
-var elm$core$List$foldrHelper = F4(
-	function (fn, acc, ctr, ls) {
-		if (!ls.b) {
-			return acc;
-		} else {
-			var a = ls.a;
-			var r1 = ls.b;
-			if (!r1.b) {
-				return A2(fn, a, acc);
-			} else {
-				var b = r1.a;
-				var r2 = r1.b;
-				if (!r2.b) {
-					return A2(
-						fn,
-						a,
-						A2(fn, b, acc));
-				} else {
-					var c = r2.a;
-					var r3 = r2.b;
-					if (!r3.b) {
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(fn, c, acc)));
-					} else {
-						var d = r3.a;
-						var r4 = r3.b;
-						var res = (ctr > 500) ? A3(
-							elm$core$List$foldl,
-							fn,
-							acc,
-							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(
-									fn,
-									c,
-									A2(fn, d, res))));
-					}
-				}
-			}
-		}
-	});
-var elm$core$List$foldr = F3(
-	function (fn, acc, ls) {
-		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
-	});
-var elm$core$List$map = F2(
-	function (f, xs) {
-		return A3(
-			elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
-			xs);
-	});
-var elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
-	});
-var elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (!maybeValue.$) {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return elm$core$Maybe$Nothing;
-		}
-	});
-var elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var elm$json$Json$Encode$null = _Json_encodeNull;
-var author$project$Eval$Try$listTuple2 = function () {
-	var resolveMaybes = function (ls) {
-		var _n0 = A2(elm$core$List$member, elm$core$Maybe$Nothing, ls);
-		if (_n0) {
-			return elm$core$Maybe$Nothing;
-		} else {
-			return elm$core$Maybe$Just(
-				A2(
-					elm$core$List$map,
-					elm$core$Maybe$withDefault(
-						_Utils_Tuple2(elm$json$Json$Encode$null, elm$json$Json$Encode$null)),
-					ls));
-		}
-	};
-	return A2(
-		elm$core$Basics$composeR,
-		author$project$Eval$Try$listList,
-		A2(
-			elm$core$Basics$composeR,
-			elm$core$Maybe$map(
-				elm$core$List$map(author$project$Eval$Try$tuple2)),
-			elm$core$Maybe$andThen(resolveMaybes)));
-}();
-var elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3(elm$core$List$foldr, elm$core$List$cons, ys, xs);
-		}
-	});
-var elm$core$List$concat = function (lists) {
-	return A3(elm$core$List$foldr, elm$core$List$append, _List_Nil, lists);
-};
-var elm$core$List$intersperse = F2(
-	function (sep, xs) {
-		if (!xs.b) {
-			return _List_Nil;
-		} else {
-			var hd = xs.a;
-			var tl = xs.b;
-			var step = F2(
-				function (x, rest) {
-					return A2(
-						elm$core$List$cons,
-						sep,
-						A2(elm$core$List$cons, x, rest));
-				});
-			var spersed = A3(elm$core$List$foldr, step, _List_Nil, tl);
-			return A2(elm$core$List$cons, hd, spersed);
-		}
-	});
-var elm$core$List$isEmpty = function (xs) {
-	if (!xs.b) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var elm$core$List$product = function (numbers) {
-	return A3(elm$core$List$foldl, elm$core$Basics$mul, 1, numbers);
-};
-var elm$core$List$repeatHelp = F3(
-	function (result, n, value) {
-		repeatHelp:
-		while (true) {
-			if (n <= 0) {
-				return result;
-			} else {
-				var $temp$result = A2(elm$core$List$cons, value, result),
-					$temp$n = n - 1,
-					$temp$value = value;
-				result = $temp$result;
-				n = $temp$n;
-				value = $temp$value;
-				continue repeatHelp;
-			}
-		}
-	});
-var elm$core$List$repeat = F2(
-	function (n, value) {
-		return A3(elm$core$List$repeatHelp, _List_Nil, n, value);
-	});
-var elm$core$List$sum = function (numbers) {
-	return A3(elm$core$List$foldl, elm$core$Basics$add, 0, numbers);
-};
-var elm$core$List$takeReverse = F3(
-	function (n, list, kept) {
-		takeReverse:
-		while (true) {
-			if (n <= 0) {
-				return kept;
-			} else {
-				if (!list.b) {
-					return kept;
-				} else {
-					var x = list.a;
-					var xs = list.b;
-					var $temp$n = n - 1,
-						$temp$list = xs,
-						$temp$kept = A2(elm$core$List$cons, x, kept);
-					n = $temp$n;
-					list = $temp$list;
-					kept = $temp$kept;
-					continue takeReverse;
-				}
-			}
-		}
-	});
-var elm$core$List$takeTailRec = F2(
-	function (n, list) {
-		return elm$core$List$reverse(
-			A3(elm$core$List$takeReverse, n, list, _List_Nil));
-	});
-var elm$core$List$takeFast = F3(
-	function (ctr, n, list) {
-		if (n <= 0) {
-			return _List_Nil;
-		} else {
-			var _n0 = _Utils_Tuple2(n, list);
-			_n0$1:
-			while (true) {
-				_n0$5:
-				while (true) {
-					if (!_n0.b.b) {
-						return list;
-					} else {
-						if (_n0.b.b.b) {
-							switch (_n0.a) {
-								case 1:
-									break _n0$1;
-								case 2:
-									var _n2 = _n0.b;
-									var x = _n2.a;
-									var _n3 = _n2.b;
-									var y = _n3.a;
-									return _List_fromArray(
-										[x, y]);
-								case 3:
-									if (_n0.b.b.b.b) {
-										var _n4 = _n0.b;
-										var x = _n4.a;
-										var _n5 = _n4.b;
-										var y = _n5.a;
-										var _n6 = _n5.b;
-										var z = _n6.a;
-										return _List_fromArray(
-											[x, y, z]);
-									} else {
-										break _n0$5;
-									}
-								default:
-									if (_n0.b.b.b.b && _n0.b.b.b.b.b) {
-										var _n7 = _n0.b;
-										var x = _n7.a;
-										var _n8 = _n7.b;
-										var y = _n8.a;
-										var _n9 = _n8.b;
-										var z = _n9.a;
-										var _n10 = _n9.b;
-										var w = _n10.a;
-										var tl = _n10.b;
-										return (ctr > 1000) ? A2(
-											elm$core$List$cons,
-											x,
-											A2(
-												elm$core$List$cons,
-												y,
-												A2(
-													elm$core$List$cons,
-													z,
-													A2(
-														elm$core$List$cons,
-														w,
-														A2(elm$core$List$takeTailRec, n - 4, tl))))) : A2(
-											elm$core$List$cons,
-											x,
-											A2(
-												elm$core$List$cons,
-												y,
-												A2(
-													elm$core$List$cons,
-													z,
-													A2(
-														elm$core$List$cons,
-														w,
-														A3(elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
-									} else {
-										break _n0$5;
-									}
-							}
-						} else {
-							if (_n0.a === 1) {
-								break _n0$1;
-							} else {
-								break _n0$5;
-							}
-						}
-					}
-				}
-				return list;
-			}
-			var _n1 = _n0.b;
-			var x = _n1.a;
-			return _List_fromArray(
-				[x]);
-		}
-	});
-var elm$core$List$take = F2(
-	function (n, list) {
-		return A3(elm$core$List$takeFast, 0, n, list);
-	});
-var elm$core$List$unzip = function (pairs) {
-	var step = F2(
-		function (_n0, _n1) {
-			var x = _n0.a;
-			var y = _n0.b;
-			var xs = _n1.a;
-			var ys = _n1.b;
-			return _Utils_Tuple2(
-				A2(elm$core$List$cons, x, xs),
-				A2(elm$core$List$cons, y, ys));
-		});
-	return A3(
-		elm$core$List$foldr,
-		step,
-		_Utils_Tuple2(_List_Nil, _List_Nil),
-		pairs);
-};
-var author$project$Eval$Core$List$lib = function (fName) {
-	switch (fName) {
-		case 'singleton':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					function (a) {
-						return elm$core$Result$Ok(
-							A2(
-								elm$json$Json$Encode$list,
-								function (v) {
-									return v;
-								},
-								_List_fromArray(
-									[a])));
-					}));
-		case 'repeat':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F2(
-					A4(
-						author$project$Eval$Wrap$a2,
-						elm$core$List$repeat,
-						_Utils_Tuple2(author$project$Eval$Try$int, elm$core$Maybe$Just),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
-						A2(author$project$Eval$Core$Error$expected, fName, '[integer, any]'))));
-		case 'range':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F2(
-					A4(
-						author$project$Eval$Wrap$a2,
-						elm$core$List$range,
-						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$int),
-						elm$json$Json$Encode$list(elm$json$Json$Encode$int),
-						A2(author$project$Eval$Core$Error$expected, fName, '[integer, integer]'))));
-		case '(::)':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F2(
-					A4(
-						author$project$Eval$Wrap$a2,
-						elm$core$List$cons,
-						_Utils_Tuple2(elm$core$Maybe$Just, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
-						A2(author$project$Eval$Core$Error$expected, fName, '[any, array]'))));
-		case 'map':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'indexedMap':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'foldl':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'foldr':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'filter':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'filterMap':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'length':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					A4(
-						author$project$Eval$Wrap$a1,
-						elm$core$List$length,
-						author$project$Eval$Try$list,
-						elm$json$Json$Encode$int,
-						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
-		case 'reverse':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					A4(
-						author$project$Eval$Wrap$a1,
-						elm$core$List$reverse,
-						author$project$Eval$Try$list,
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
-						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
-		case 'member':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noCompare(fName));
-		case 'all':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noCompare(fName));
-		case 'any':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noCompare(fName));
-		case 'maximum':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noCompare(fName));
-		case 'minimum':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noCompare(fName));
-		case 'sum':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					A4(
-						author$project$Eval$Wrap$a1,
-						elm$core$List$sum,
-						author$project$Eval$Try$listFloat,
-						elm$json$Json$Encode$float,
-						A2(author$project$Eval$Core$Error$expected, fName, '[array(number)]'))));
-		case 'product':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					A4(
-						author$project$Eval$Wrap$a1,
-						elm$core$List$product,
-						author$project$Eval$Try$listFloat,
-						elm$json$Json$Encode$float,
-						A2(author$project$Eval$Core$Error$expected, fName, '[array(number)]'))));
-		case 'append':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F2(
-					A4(
-						author$project$Eval$Wrap$a2,
-						elm$core$List$append,
-						_Utils_Tuple2(author$project$Eval$Try$list, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
-						A2(author$project$Eval$Core$Error$expected, fName, '[array, array]'))));
-		case 'concat':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					A4(
-						author$project$Eval$Wrap$a1,
-						elm$core$List$concat,
-						author$project$Eval$Try$listList,
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
-						A2(author$project$Eval$Core$Error$expected, fName, '[array(array)]'))));
-		case 'concatMap':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'intersperse':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F2(
-					A4(
-						author$project$Eval$Wrap$a2,
-						elm$core$List$intersperse,
-						_Utils_Tuple2(elm$core$Maybe$Just, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
-						A2(author$project$Eval$Core$Error$expected, fName, '[any, array]'))));
-		case 'map2':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'map3':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'map4':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'map5':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noFunction(fName));
-		case 'sort':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noCompare(fName));
-		case 'sortBy':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noCompare(fName));
-		case 'sortWith':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noCompare(fName));
-		case 'isEmpty':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					A4(
-						author$project$Eval$Wrap$a1,
-						elm$core$List$isEmpty,
-						author$project$Eval$Try$list,
-						elm$json$Json$Encode$bool,
-						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
-		case 'head':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					function (value) {
-						var _n1 = A2(
-							elm$core$Maybe$withDefault,
-							_List_Nil,
-							author$project$Eval$Try$list(value));
-						if (!_n1.b) {
-							return elm$core$Result$Err('Can\'t return the first element of an empty array.');
-						} else {
-							var first = _n1.a;
-							return elm$core$Result$Ok(first);
-						}
-					}));
-		case 'tail':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					function (value) {
-						var _n2 = A2(
-							elm$core$Maybe$withDefault,
-							_List_Nil,
-							author$project$Eval$Try$list(value));
-						if (!_n2.b) {
-							return elm$core$Result$Err('Can\'t partition an empty array.');
-						} else {
-							var rest = _n2.b;
-							return elm$core$Result$Ok(
-								A2(
-									elm$json$Json$Encode$list,
-									function (v) {
-										return v;
-									},
-									rest));
-						}
-					}));
-		case 'take':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F2(
-					A4(
-						author$project$Eval$Wrap$a2,
-						elm$core$List$take,
-						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
-						A2(author$project$Eval$Core$Error$expected, fName, '[integer, array]'))));
-		case 'drop':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F2(
-					A4(
-						author$project$Eval$Wrap$a2,
-						elm$core$List$drop,
-						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
-						A2(author$project$Eval$Core$Error$expected, fName, '[integer, array]'))));
-		case 'partition':
-			return elm$core$Result$Err(
-				author$project$Eval$Core$Error$noCompare(fName));
-		case 'unzip':
-			return elm$core$Result$Ok(
-				author$project$Eval$Function$F1(
-					A4(
-						author$project$Eval$Wrap$a1,
-						elm$core$List$unzip,
-						author$project$Eval$Try$listTuple2,
-						function (_n3) {
-							var a = _n3.a;
-							var b = _n3.b;
-							return A2(
-								elm$json$Json$Encode$list,
-								elm$json$Json$Encode$list(
-									function (v) {
-										return v;
-									}),
-								_List_fromArray(
-									[a, b]));
-						},
-						A2(author$project$Eval$Core$Error$expected, fName, '[array(array-2n)]'))));
-		default:
-			return elm$core$Result$Err(
-				A2(author$project$Eval$Core$Error$notFound, 'List', fName));
 	}
 };
 var author$project$Eval$Core$lib = function (expression) {
