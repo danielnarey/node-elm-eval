@@ -2631,31 +2631,27 @@ var author$project$Eval$Core$Error$notFound = F2(
 	function (moduleName, fName) {
 		return 'A function named `' + (fName + ('` was not found in the `' + (moduleName + '` core library.')));
 	});
-var author$project$Eval$Function$F0 = function (a) {
-	return {$: 0, a: a};
-};
-var author$project$Eval$Function$F1 = function (a) {
-	return {$: 1, a: a};
-};
-var author$project$Eval$Function$F2 = function (a) {
-	return {$: 2, a: a};
-};
-var author$project$Eval$Function$F3 = function (a) {
-	return {$: 3, a: a};
-};
-var elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
+var elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+var elm$core$Array$foldl = F3(
+	function (func, baseCase, _n0) {
+		var tree = _n0.c;
+		var tail = _n0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (!node.$) {
+					var subTree = node.a;
+					return A3(elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3(elm$core$Elm$JsArray$foldl, func, acc, values);
+				}
+			});
+		return A3(
+			elm$core$Elm$JsArray$foldl,
+			func,
+			A3(elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
+			tail);
 	});
-var elm$core$Result$toMaybe = function (result) {
-	if (!result.$) {
-		var v = result.a;
-		return elm$core$Maybe$Just(v);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
 var elm$core$Array$branchFactor = 32;
 var elm$core$Array$Array_elm_builtin = F4(
 	function (a, b, c, d) {
@@ -3003,6 +2999,83 @@ var elm$json$Json$Decode$errorToStringHelp = F2(
 			}
 		}
 	});
+var elm$json$Json$Encode$array = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				elm$core$Array$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(0),
+				entries));
+	});
+var author$project$Eval$Encode$array = elm$json$Json$Encode$array(
+	function (v) {
+		return v;
+	});
+var elm$json$Json$Encode$bool = _Json_wrap;
+var author$project$Eval$Encode$bool = elm$json$Json$Encode$bool;
+var elm$json$Json$Encode$int = _Json_wrap;
+var author$project$Eval$Encode$int = elm$json$Json$Encode$int;
+var elm$json$Json$Encode$list = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				elm$core$List$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(0),
+				entries));
+	});
+var author$project$Eval$Encode$list = elm$json$Json$Encode$list(
+	function (v) {
+		return v;
+	});
+var author$project$Eval$Encode$listTuple2 = function (_n0) {
+	var da = _n0.a;
+	var db = _n0.b;
+	return elm$json$Json$Encode$list(
+		function (_n1) {
+			var a = _n1.a;
+			var b = _n1.b;
+			return A2(
+				elm$json$Json$Encode$list,
+				function (v) {
+					return v;
+				},
+				_List_fromArray(
+					[
+						da(a),
+						db(b)
+					]));
+		});
+};
+var author$project$Eval$Encode$value = function (v) {
+	return v;
+};
+var author$project$Eval$Function$F0 = function (a) {
+	return {$: 0, a: a};
+};
+var author$project$Eval$Function$F1 = function (a) {
+	return {$: 1, a: a};
+};
+var author$project$Eval$Function$F2 = function (a) {
+	return {$: 2, a: a};
+};
+var author$project$Eval$Function$F3 = function (a) {
+	return {$: 3, a: a};
+};
+var elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var elm$core$Result$toMaybe = function (result) {
+	if (!result.$) {
+		var v = result.a;
+		return elm$core$Maybe$Just(v);
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
 var elm$json$Json$Decode$array = _Json_decodeArray;
 var elm$json$Json$Decode$decodeValue = _Json_run;
 var elm$json$Json$Decode$value = _Json_decodeValue;
@@ -3241,7 +3314,6 @@ var elm$core$Array$appendHelpTree = F2(
 			return newArray;
 		}
 	});
-var elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var elm$core$Array$builderFromArray = function (_n0) {
 	var len = _n0.a;
 	var tree = _n0.c;
@@ -3623,37 +3695,29 @@ var elm$core$Array$slice = F3(
 			correctFrom,
 			A2(elm$core$Array$sliceRight, correctTo, array));
 	});
-var elm$core$Array$foldl = F3(
-	function (func, baseCase, _n0) {
-		var tree = _n0.c;
-		var tail = _n0.d;
-		var helper = F2(
-			function (node, acc) {
-				if (!node.$) {
-					var subTree = node.a;
-					return A3(elm$core$Elm$JsArray$foldl, helper, acc, subTree);
-				} else {
-					var values = node.a;
-					return A3(elm$core$Elm$JsArray$foldl, func, acc, values);
-				}
-			});
-		return A3(
-			elm$core$Elm$JsArray$foldl,
-			func,
-			A3(elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
-			tail);
-	});
-var elm$json$Json$Encode$array = F2(
-	function (func, entries) {
-		return _Json_wrap(
-			A3(
-				elm$core$Array$foldl,
-				_Json_addEntry(func),
-				_Json_emptyArray(0),
-				entries));
-	});
-var elm$json$Json$Encode$bool = _Json_wrap;
-var elm$json$Json$Encode$int = _Json_wrap;
+var elm$core$Tuple$second = function (_n0) {
+	var y = _n0.b;
+	return y;
+};
+var elm$core$Array$toIndexedList = function (array) {
+	var len = array.a;
+	var helper = F2(
+		function (entry, _n0) {
+			var index = _n0.a;
+			var list = _n0.b;
+			return _Utils_Tuple2(
+				index - 1,
+				A2(
+					elm$core$List$cons,
+					_Utils_Tuple2(index, entry),
+					list));
+		});
+	return A3(
+		elm$core$Array$foldr,
+		helper,
+		_Utils_Tuple2(len - 1, _List_Nil),
+		array).b;
+};
 var author$project$Eval$Core$Array$lib = function (fName) {
 	switch (fName) {
 		case 'empty':
@@ -3664,10 +3728,7 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 						function (_n1) {
 							return elm$core$Array$empty;
 						},
-						elm$json$Json$Encode$array(
-							function (v) {
-								return v;
-							}))));
+						author$project$Eval$Encode$array)));
 		case 'initialize':
 			return elm$core$Result$Err(
 				author$project$Eval$Core$Error$noFunction(fName));
@@ -3678,10 +3739,7 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Array$repeat,
 						_Utils_Tuple2(author$project$Eval$Try$int, elm$core$Maybe$Just),
-						elm$json$Json$Encode$array(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$array,
 						A2(author$project$Eval$Core$Error$expected, fName, '[integer, any]'))));
 		case 'fromList':
 			return elm$core$Result$Ok(
@@ -3690,10 +3748,7 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Array$fromList,
 						author$project$Eval$Try$list,
-						elm$json$Json$Encode$array(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$array,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
 		case 'isEmpty':
 			return elm$core$Result$Ok(
@@ -3702,7 +3757,7 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Array$isEmpty,
 						author$project$Eval$Try$array,
-						elm$json$Json$Encode$bool,
+						author$project$Eval$Encode$bool,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
 		case 'length':
 			return elm$core$Result$Ok(
@@ -3711,7 +3766,7 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Array$length,
 						author$project$Eval$Try$array,
-						elm$json$Json$Encode$int,
+						author$project$Eval$Encode$int,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
 		case 'get':
 			return elm$core$Result$Ok(
@@ -3755,11 +3810,7 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 							var _n7 = A2(elm$core$Array$get, index, array);
 							if (!_n7.$) {
 								return elm$core$Result$Ok(
-									A2(
-										elm$json$Json$Encode$array,
-										function (v) {
-											return v;
-										},
+									author$project$Eval$Encode$array(
 										A3(elm$core$Array$set, index, b, array)));
 							} else {
 								return elm$core$Result$Err(
@@ -3778,10 +3829,7 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Array$push,
 						_Utils_Tuple2(elm$core$Maybe$Just, author$project$Eval$Try$array),
-						elm$json$Json$Encode$array(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$array,
 						A2(author$project$Eval$Core$Error$expected, fName, '[any, array]'))));
 		case 'append':
 			return elm$core$Result$Ok(
@@ -3790,10 +3838,7 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Array$append,
 						_Utils_Tuple2(author$project$Eval$Try$array, author$project$Eval$Try$array),
-						elm$json$Json$Encode$array(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$array,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array, array]'))));
 		case 'slice':
 			return elm$core$Result$Ok(
@@ -3802,11 +3847,42 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 						author$project$Eval$Wrap$a3,
 						elm$core$Array$slice,
 						_Utils_Tuple3(author$project$Eval$Try$int, author$project$Eval$Try$int, author$project$Eval$Try$array),
-						elm$json$Json$Encode$array(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$array,
 						A2(author$project$Eval$Core$Error$expected, fName, '[integer, integer, array]'))));
+		case 'toList':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$Array$toList,
+						author$project$Eval$Try$array,
+						author$project$Eval$Encode$list,
+						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
+		case 'toIndexedList':
+			return elm$core$Result$Ok(
+				author$project$Eval$Function$F1(
+					A4(
+						author$project$Eval$Wrap$a1,
+						elm$core$Array$toIndexedList,
+						author$project$Eval$Try$array,
+						author$project$Eval$Encode$listTuple2(
+							_Utils_Tuple2(author$project$Eval$Encode$int, author$project$Eval$Encode$value)),
+						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
+		case 'map':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'indexedMap':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'foldl':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'foldr':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
+		case 'filter':
+			return elm$core$Result$Err(
+				author$project$Eval$Core$Error$noFunction(fName));
 		default:
 			return elm$core$Result$Err(
 				A2(author$project$Eval$Core$Error$notFound, 'Array', fName));
@@ -3815,6 +3891,26 @@ var author$project$Eval$Core$Array$lib = function (fName) {
 var author$project$Eval$Core$Error$noCompare = function (fName) {
 	return 'Comparison functions like `' + (fName + ('` can\'t be called through this interface because Elm doesn\'t support ' + 'type inference on JavaScript values passed in through ports.'));
 };
+var elm$json$Json$Encode$float = _Json_wrap;
+var author$project$Eval$Encode$float = elm$json$Json$Encode$float;
+var author$project$Eval$Encode$listInt = elm$json$Json$Encode$list(elm$json$Json$Encode$int);
+var author$project$Eval$Encode$tuple2 = F2(
+	function (_n0, _n1) {
+		var da = _n0.a;
+		var db = _n0.b;
+		var a = _n1.a;
+		var b = _n1.b;
+		return A2(
+			elm$json$Json$Encode$list,
+			function (v) {
+				return v;
+			},
+			_List_fromArray(
+				[
+					da(a),
+					db(b)
+				]));
+	});
 var elm$json$Json$Decode$float = _Json_decodeFloat;
 var author$project$Eval$Try$listFloat = A2(
 	elm$core$Basics$composeR,
@@ -4174,16 +4270,6 @@ var elm$core$List$unzip = function (pairs) {
 		_Utils_Tuple2(_List_Nil, _List_Nil),
 		pairs);
 };
-var elm$json$Json$Encode$float = _Json_wrap;
-var elm$json$Json$Encode$list = F2(
-	function (func, entries) {
-		return _Json_wrap(
-			A3(
-				elm$core$List$foldl,
-				_Json_addEntry(func),
-				_Json_emptyArray(0),
-				entries));
-	});
 var author$project$Eval$Core$List$lib = function (fName) {
 	switch (fName) {
 		case 'singleton':
@@ -4191,11 +4277,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 				author$project$Eval$Function$F1(
 					function (a) {
 						return elm$core$Result$Ok(
-							A2(
-								elm$json$Json$Encode$list,
-								function (v) {
-									return v;
-								},
+							author$project$Eval$Encode$list(
 								_List_fromArray(
 									[a])));
 					}));
@@ -4206,10 +4288,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$List$repeat,
 						_Utils_Tuple2(author$project$Eval$Try$int, elm$core$Maybe$Just),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$list,
 						A2(author$project$Eval$Core$Error$expected, fName, '[integer, any]'))));
 		case 'range':
 			return elm$core$Result$Ok(
@@ -4218,7 +4297,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$List$range,
 						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$int),
-						elm$json$Json$Encode$list(elm$json$Json$Encode$int),
+						author$project$Eval$Encode$listInt,
 						A2(author$project$Eval$Core$Error$expected, fName, '[integer, integer]'))));
 		case '(::)':
 			return elm$core$Result$Ok(
@@ -4227,10 +4306,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$List$cons,
 						_Utils_Tuple2(elm$core$Maybe$Just, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$list,
 						A2(author$project$Eval$Core$Error$expected, fName, '[any, array]'))));
 		case 'map':
 			return elm$core$Result$Err(
@@ -4257,7 +4333,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$List$length,
 						author$project$Eval$Try$list,
-						elm$json$Json$Encode$int,
+						author$project$Eval$Encode$int,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
 		case 'reverse':
 			return elm$core$Result$Ok(
@@ -4266,10 +4342,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$List$reverse,
 						author$project$Eval$Try$list,
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$list,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
 		case 'member':
 			return elm$core$Result$Err(
@@ -4293,7 +4366,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$List$sum,
 						author$project$Eval$Try$listFloat,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array(number)]'))));
 		case 'product':
 			return elm$core$Result$Ok(
@@ -4302,7 +4375,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$List$product,
 						author$project$Eval$Try$listFloat,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array(number)]'))));
 		case 'append':
 			return elm$core$Result$Ok(
@@ -4311,10 +4384,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$List$append,
 						_Utils_Tuple2(author$project$Eval$Try$list, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$list,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array, array]'))));
 		case 'concat':
 			return elm$core$Result$Ok(
@@ -4323,10 +4393,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$List$concat,
 						author$project$Eval$Try$listList,
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$list,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array(array)]'))));
 		case 'concatMap':
 			return elm$core$Result$Err(
@@ -4338,10 +4405,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$List$intersperse,
 						_Utils_Tuple2(elm$core$Maybe$Just, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$list,
 						A2(author$project$Eval$Core$Error$expected, fName, '[any, array]'))));
 		case 'map2':
 			return elm$core$Result$Err(
@@ -4371,7 +4435,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$List$isEmpty,
 						author$project$Eval$Try$list,
-						elm$json$Json$Encode$bool,
+						author$project$Eval$Encode$bool,
 						A2(author$project$Eval$Core$Error$expected, fName, '[array]'))));
 		case 'head':
 			return elm$core$Result$Ok(
@@ -4401,12 +4465,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						} else {
 							var rest = _n2.b;
 							return elm$core$Result$Ok(
-								A2(
-									elm$json$Json$Encode$list,
-									function (v) {
-										return v;
-									},
-									rest));
+								author$project$Eval$Encode$list(rest));
 						}
 					}));
 		case 'take':
@@ -4416,10 +4475,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$List$take,
 						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$list,
 						A2(author$project$Eval$Core$Error$expected, fName, '[integer, array]'))));
 		case 'drop':
 			return elm$core$Result$Ok(
@@ -4428,10 +4484,7 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$List$drop,
 						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$list),
-						elm$json$Json$Encode$list(
-							function (v) {
-								return v;
-							}),
+						author$project$Eval$Encode$list,
 						A2(author$project$Eval$Core$Error$expected, fName, '[integer, array]'))));
 		case 'partition':
 			return elm$core$Result$Err(
@@ -4443,19 +4496,9 @@ var author$project$Eval$Core$List$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$List$unzip,
 						author$project$Eval$Try$listTuple2,
-						function (_n3) {
-							var a = _n3.a;
-							var b = _n3.b;
-							return A2(
-								elm$json$Json$Encode$list,
-								elm$json$Json$Encode$list(
-									function (v) {
-										return v;
-									}),
-								_List_fromArray(
-									[a, b]));
-						},
-						A2(author$project$Eval$Core$Error$expected, fName, '[array(array-2n)]'))));
+						author$project$Eval$Encode$tuple2(
+							_Utils_Tuple2(author$project$Eval$Encode$list, author$project$Eval$Encode$list)),
+						A2(author$project$Eval$Core$Error$expected, fName, '[array(array-2)]'))));
 		default:
 			return elm$core$Result$Err(
 				A2(author$project$Eval$Core$Error$notFound, 'List', fName));
@@ -4530,7 +4573,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$add,
 						_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$float),
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number, number]'))));
 		case '(-)':
 			return elm$core$Result$Ok(
@@ -4539,7 +4582,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$sub,
 						_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$float),
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number, number]'))));
 		case '(*)':
 			return elm$core$Result$Ok(
@@ -4548,7 +4591,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$mul,
 						_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$float),
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number, number]'))));
 		case '(/)':
 			return elm$core$Result$Ok(
@@ -4557,7 +4600,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$fdiv,
 						_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$float),
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number, number]'))));
 		case '(//)':
 			return elm$core$Result$Ok(
@@ -4566,7 +4609,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$idiv,
 						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$int),
-						elm$json$Json$Encode$int,
+						author$project$Eval$Encode$int,
 						A2(author$project$Eval$Core$Error$expected, fName, '[integer, integer]'))));
 		case '(^)':
 			return elm$core$Result$Ok(
@@ -4575,7 +4618,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$pow,
 						_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$float),
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number, number]'))));
 		case 'round':
 			return elm$core$Result$Ok(
@@ -4584,7 +4627,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$round,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$int,
+						author$project$Eval$Encode$int,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'floor':
 			return elm$core$Result$Ok(
@@ -4593,7 +4636,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$floor,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$int,
+						author$project$Eval$Encode$int,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'ceiling':
 			return elm$core$Result$Ok(
@@ -4602,7 +4645,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$ceiling,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$int,
+						author$project$Eval$Encode$int,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'truncate':
 			return elm$core$Result$Ok(
@@ -4611,7 +4654,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$truncate,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$int,
+						author$project$Eval$Encode$int,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case '(==)':
 			return elm$core$Result$Err(
@@ -4647,7 +4690,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$not,
 						author$project$Eval$Try$bool,
-						elm$json$Json$Encode$bool,
+						author$project$Eval$Encode$bool,
 						A2(author$project$Eval$Core$Error$expected, fName, '[boolean]'))));
 		case '(&&)':
 			return elm$core$Result$Ok(
@@ -4656,7 +4699,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$and,
 						_Utils_Tuple2(author$project$Eval$Try$bool, author$project$Eval$Try$bool),
-						elm$json$Json$Encode$bool,
+						author$project$Eval$Encode$bool,
 						A2(author$project$Eval$Core$Error$expected, fName, '[boolean, boolean]'))));
 		case '(||)':
 			return elm$core$Result$Ok(
@@ -4665,7 +4708,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$or,
 						_Utils_Tuple2(author$project$Eval$Try$bool, author$project$Eval$Try$bool),
-						elm$json$Json$Encode$bool,
+						author$project$Eval$Encode$bool,
 						A2(author$project$Eval$Core$Error$expected, fName, '[boolean, boolean]'))));
 		case 'xor':
 			return elm$core$Result$Ok(
@@ -4674,7 +4717,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$xor,
 						_Utils_Tuple2(author$project$Eval$Try$bool, author$project$Eval$Try$bool),
-						elm$json$Json$Encode$bool,
+						author$project$Eval$Encode$bool,
 						A2(author$project$Eval$Core$Error$expected, fName, '[boolean, boolean]'))));
 		case '(++)':
 			return elm$core$Result$Err('The `(++)` function can\'t be called throught this interface because ' + ('Elm doesn\'t support type inference on JavaScript values passed in ' + 'through ports. Use `String.append` or `List.append` instead.'));
@@ -4685,7 +4728,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$modBy,
 						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$int),
-						elm$json$Json$Encode$int,
+						author$project$Eval$Encode$int,
 						A2(author$project$Eval$Core$Error$expected, fName, '[integer, integer]'))));
 		case 'remainderBy':
 			return elm$core$Result$Ok(
@@ -4694,7 +4737,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$remainderBy,
 						_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$int),
-						elm$json$Json$Encode$int,
+						author$project$Eval$Encode$int,
 						A2(author$project$Eval$Core$Error$expected, fName, '[integer, integer]'))));
 		case 'negate':
 			return elm$core$Result$Ok(
@@ -4703,7 +4746,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$negate,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'abs':
 			return elm$core$Result$Ok(
@@ -4712,7 +4755,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$abs,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'clamp':
 			return elm$core$Result$Ok(
@@ -4721,7 +4764,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a3,
 						elm$core$Basics$clamp,
 						_Utils_Tuple3(author$project$Eval$Try$float, author$project$Eval$Try$float, author$project$Eval$Try$float),
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number, number, number]'))));
 		case 'sqrt':
 			return elm$core$Result$Ok(
@@ -4730,7 +4773,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$sqrt,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'logBase':
 			return elm$core$Result$Ok(
@@ -4739,7 +4782,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$logBase,
 						_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$float),
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number, number]'))));
 		case 'e':
 			return elm$core$Result$Ok(
@@ -4749,7 +4792,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						function (_n1) {
 							return elm$core$Basics$e;
 						},
-						elm$json$Json$Encode$float)));
+						author$project$Eval$Encode$float)));
 		case 'degrees':
 			return elm$core$Result$Ok(
 				author$project$Eval$Function$F1(
@@ -4757,7 +4800,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$degrees,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'radians':
 			return elm$core$Result$Ok(
@@ -4766,7 +4809,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$radians,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'turns':
 			return elm$core$Result$Ok(
@@ -4775,7 +4818,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$turns,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'pi':
 			return elm$core$Result$Ok(
@@ -4785,7 +4828,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						function (_n2) {
 							return elm$core$Basics$pi;
 						},
-						elm$json$Json$Encode$float)));
+						author$project$Eval$Encode$float)));
 		case 'cos':
 			return elm$core$Result$Ok(
 				author$project$Eval$Function$F1(
@@ -4793,7 +4836,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$cos,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'sin':
 			return elm$core$Result$Ok(
@@ -4802,7 +4845,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$sin,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'tan':
 			return elm$core$Result$Ok(
@@ -4811,7 +4854,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$tan,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'acos':
 			return elm$core$Result$Ok(
@@ -4820,7 +4863,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$acos,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'asin':
 			return elm$core$Result$Ok(
@@ -4829,7 +4872,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$asin,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'atan':
 			return elm$core$Result$Ok(
@@ -4838,7 +4881,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$atan,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'atan2':
 			return elm$core$Result$Ok(
@@ -4847,7 +4890,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a2,
 						elm$core$Basics$atan2,
 						_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$float),
-						elm$json$Json$Encode$float,
+						author$project$Eval$Encode$float,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'toPolar':
 			return elm$core$Result$Ok(
@@ -4860,15 +4903,8 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 									_Utils_Tuple2(a, b));
 							}),
 						_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$float),
-						function (_n3) {
-							var a = _n3.a;
-							var b = _n3.b;
-							return A2(
-								elm$json$Json$Encode$list,
-								elm$json$Json$Encode$float,
-								_List_fromArray(
-									[a, b]));
-						},
+						author$project$Eval$Encode$tuple2(
+							_Utils_Tuple2(author$project$Eval$Encode$float, author$project$Eval$Encode$float)),
 						A2(author$project$Eval$Core$Error$expected, fName, '[number, number]'))));
 		case 'fromPolar':
 			return elm$core$Result$Ok(
@@ -4881,15 +4917,8 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 									_Utils_Tuple2(a, b));
 							}),
 						_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$float),
-						function (_n4) {
-							var a = _n4.a;
-							var b = _n4.b;
-							return A2(
-								elm$json$Json$Encode$list,
-								elm$json$Json$Encode$float,
-								_List_fromArray(
-									[a, b]));
-						},
+						author$project$Eval$Encode$tuple2(
+							_Utils_Tuple2(author$project$Eval$Encode$float, author$project$Eval$Encode$float)),
 						A2(author$project$Eval$Core$Error$expected, fName, '[number, number]'))));
 		case 'isNaN':
 			return elm$core$Result$Ok(
@@ -4898,7 +4927,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$isNaN,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$bool,
+						author$project$Eval$Encode$bool,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'isInfinite':
 			return elm$core$Result$Ok(
@@ -4907,7 +4936,7 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 						author$project$Eval$Wrap$a1,
 						elm$core$Basics$isInfinite,
 						author$project$Eval$Try$float,
-						elm$json$Json$Encode$bool,
+						author$project$Eval$Encode$bool,
 						A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
 		case 'identity':
 			return elm$core$Result$Ok(
@@ -4918,8 +4947,8 @@ var author$project$Eval$Core$Basics$lib = function (fName) {
 		case 'always':
 			return elm$core$Result$Ok(
 				author$project$Eval$Function$F2(
-					function (_n5) {
-						var a = _n5.a;
+					function (_n3) {
+						var a = _n3.a;
 						return elm$core$Result$Ok(a);
 					}));
 		case '(<|)':
@@ -5587,42 +5616,609 @@ var author$project$Eval$Core$Dict$lib = function (fName) {
 				A2(author$project$Eval$Core$Error$notFound, 'Dict', fName));
 	}
 };
+var elm$core$String$cons = _String_cons;
+var elm$core$String$fromChar = function (_char) {
+	return A2(elm$core$String$cons, _char, '');
+};
+var elm$core$Set$foldl = F3(
+	function (func, initialState, _n0) {
+		var dict = _n0;
+		return A3(
+			elm$core$Dict$foldl,
+			F3(
+				function (key, _n1, state) {
+					return A2(func, key, state);
+				}),
+			initialState,
+			dict);
+	});
+var elm$json$Json$Encode$set = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				elm$core$Set$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(0),
+				entries));
+	});
+var elm$json$Json$Encode$string = _Json_wrap;
+var author$project$Eval$Encode$setChar = elm$json$Json$Encode$set(
+	A2(elm$core$Basics$composeR, elm$core$String$fromChar, elm$json$Json$Encode$string));
+var author$project$Eval$Encode$setFloat = elm$json$Json$Encode$set(elm$json$Json$Encode$float);
+var author$project$Eval$Encode$setInt = elm$json$Json$Encode$set(elm$json$Json$Encode$int);
+var author$project$Eval$Encode$setString = elm$json$Json$Encode$set(elm$json$Json$Encode$string);
+var elm$core$String$foldr = _String_foldr;
+var elm$core$String$toList = function (string) {
+	return A3(elm$core$String$foldr, elm$core$List$cons, _List_Nil, string);
+};
+var elm$json$Json$Decode$string = _Json_decodeString;
+var author$project$Eval$Try$char = function () {
+	var singleChar = function (s) {
+		var _n0 = elm$core$String$toList(s);
+		if (_n0.b && (!_n0.b.b)) {
+			var first = _n0.a;
+			return elm$core$Maybe$Just(first);
+		} else {
+			return elm$core$Maybe$Nothing;
+		}
+	};
+	return A2(
+		elm$core$Basics$composeR,
+		elm$json$Json$Decode$decodeValue(elm$json$Json$Decode$string),
+		A2(
+			elm$core$Basics$composeR,
+			elm$core$Result$toMaybe,
+			elm$core$Maybe$andThen(singleChar)));
+}();
+var elm$core$Basics$identity = function (x) {
+	return x;
+};
+var elm$core$Set$Set_elm_builtin = elm$core$Basics$identity;
+var elm$core$Set$empty = elm$core$Dict$empty;
+var elm$core$Set$insert = F2(
+	function (key, _n0) {
+		var dict = _n0;
+		return A3(elm$core$Dict$insert, key, 0, dict);
+	});
+var elm$core$Set$fromList = function (list) {
+	return A3(elm$core$List$foldl, elm$core$Set$insert, elm$core$Set$empty, list);
+};
+var author$project$Eval$Try$setChar = function () {
+	var resolveMaybes = function (ls) {
+		var _n0 = A2(elm$core$List$member, elm$core$Maybe$Nothing, ls);
+		if (_n0) {
+			return elm$core$Maybe$Nothing;
+		} else {
+			return elm$core$Maybe$Just(
+				A2(
+					elm$core$List$map,
+					elm$core$Maybe$withDefault('!'),
+					ls));
+		}
+	};
+	return A2(
+		elm$core$Basics$composeR,
+		elm$json$Json$Decode$decodeValue(
+			elm$json$Json$Decode$list(
+				A2(elm$json$Json$Decode$map, author$project$Eval$Try$char, elm$json$Json$Decode$value))),
+		A2(
+			elm$core$Basics$composeR,
+			elm$core$Result$toMaybe,
+			A2(
+				elm$core$Basics$composeR,
+				elm$core$Maybe$andThen(resolveMaybes),
+				elm$core$Maybe$map(elm$core$Set$fromList))));
+}();
+var author$project$Eval$Try$setFloat = A2(
+	elm$core$Basics$composeR,
+	elm$json$Json$Decode$decodeValue(
+		elm$json$Json$Decode$list(elm$json$Json$Decode$float)),
+	A2(
+		elm$core$Basics$composeR,
+		elm$core$Result$toMaybe,
+		elm$core$Maybe$map(elm$core$Set$fromList)));
+var author$project$Eval$Try$setInt = A2(
+	elm$core$Basics$composeR,
+	elm$json$Json$Decode$decodeValue(
+		elm$json$Json$Decode$list(elm$json$Json$Decode$int)),
+	A2(
+		elm$core$Basics$composeR,
+		elm$core$Result$toMaybe,
+		elm$core$Maybe$map(elm$core$Set$fromList)));
+var author$project$Eval$Try$setString = A2(
+	elm$core$Basics$composeR,
+	elm$json$Json$Decode$decodeValue(
+		elm$json$Json$Decode$list(elm$json$Json$Decode$string)),
+	A2(
+		elm$core$Basics$composeR,
+		elm$core$Result$toMaybe,
+		elm$core$Maybe$map(elm$core$Set$fromList)));
+var author$project$Eval$Try$string = A2(
+	elm$core$Basics$composeR,
+	elm$json$Json$Decode$decodeValue(elm$json$Json$Decode$string),
+	elm$core$Result$toMaybe);
+var elm$core$Set$diff = F2(
+	function (_n0, _n1) {
+		var dict1 = _n0;
+		var dict2 = _n1;
+		return A2(elm$core$Dict$diff, dict1, dict2);
+	});
+var elm$core$Set$intersect = F2(
+	function (_n0, _n1) {
+		var dict1 = _n0;
+		var dict2 = _n1;
+		return A2(elm$core$Dict$intersect, dict1, dict2);
+	});
+var elm$core$Set$member = F2(
+	function (key, _n0) {
+		var dict = _n0;
+		return A2(elm$core$Dict$member, key, dict);
+	});
+var elm$core$Set$remove = F2(
+	function (key, _n0) {
+		var dict = _n0;
+		return A2(elm$core$Dict$remove, key, dict);
+	});
+var elm$core$Dict$singleton = F2(
+	function (key, value) {
+		return A5(elm$core$Dict$RBNode_elm_builtin, 1, key, value, elm$core$Dict$RBEmpty_elm_builtin, elm$core$Dict$RBEmpty_elm_builtin);
+	});
+var elm$core$Set$singleton = function (key) {
+	return A2(elm$core$Dict$singleton, key, 0);
+};
+var elm$core$Dict$sizeHelp = F2(
+	function (n, dict) {
+		sizeHelp:
+		while (true) {
+			if (dict.$ === -2) {
+				return n;
+			} else {
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$n = A2(elm$core$Dict$sizeHelp, n + 1, right),
+					$temp$dict = left;
+				n = $temp$n;
+				dict = $temp$dict;
+				continue sizeHelp;
+			}
+		}
+	});
+var elm$core$Dict$size = function (dict) {
+	return A2(elm$core$Dict$sizeHelp, 0, dict);
+};
+var elm$core$Set$size = function (_n0) {
+	var dict = _n0;
+	return elm$core$Dict$size(dict);
+};
+var elm$core$Set$union = F2(
+	function (_n0, _n1) {
+		var dict1 = _n0;
+		var dict2 = _n1;
+		return A2(elm$core$Dict$union, dict1, dict2);
+	});
+var author$project$Eval$Core$Set$lib = function (fName) {
+	lib:
+	while (true) {
+		switch (fName) {
+			case 'empty':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F0(
+						A2(
+							author$project$Eval$Wrap$a0,
+							function (_n1) {
+								return elm$core$Set$empty;
+							},
+							A2(elm$core$Basics$composeR, elm$core$Set$toList, author$project$Eval$Encode$list))));
+			case 'singleton':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'singleton.string':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Set$singleton,
+							author$project$Eval$Try$string,
+							author$project$Eval$Encode$setString,
+							A2(author$project$Eval$Core$Error$expected, fName, '[string]'))));
+			case 'singleton.char':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Set$singleton,
+							author$project$Eval$Try$char,
+							author$project$Eval$Encode$setChar,
+							A2(author$project$Eval$Core$Error$expected, fName, '[string]'))));
+			case 'singleton.int':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Set$singleton,
+							author$project$Eval$Try$int,
+							author$project$Eval$Encode$setInt,
+							A2(author$project$Eval$Core$Error$expected, fName, '[integer]'))));
+			case 'singleton.float':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Set$singleton,
+							author$project$Eval$Try$float,
+							author$project$Eval$Encode$setFloat,
+							A2(author$project$Eval$Core$Error$expected, fName, '[number]'))));
+			case 'insert':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'insert.string':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$insert,
+							_Utils_Tuple2(author$project$Eval$Try$string, author$project$Eval$Try$setString),
+							author$project$Eval$Encode$setString,
+							A2(author$project$Eval$Core$Error$expected, fName, '[string, array(string)]'))));
+			case 'insert.char':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$insert,
+							_Utils_Tuple2(author$project$Eval$Try$char, author$project$Eval$Try$setChar),
+							author$project$Eval$Encode$setChar,
+							A2(author$project$Eval$Core$Error$expected, fName, '[string-1, array(string-1)]'))));
+			case 'insert.int':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$insert,
+							_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$setInt),
+							author$project$Eval$Encode$setInt,
+							A2(author$project$Eval$Core$Error$expected, fName, '[integer, array(integer)]'))));
+			case 'insert.float':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$insert,
+							_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$setFloat),
+							author$project$Eval$Encode$setFloat,
+							A2(author$project$Eval$Core$Error$expected, fName, '[float, array(number)]'))));
+			case 'remove':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'remove.string':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$remove,
+							_Utils_Tuple2(author$project$Eval$Try$string, author$project$Eval$Try$setString),
+							author$project$Eval$Encode$setString,
+							A2(author$project$Eval$Core$Error$expected, fName, '[string, array(string)]'))));
+			case 'remove.char':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$remove,
+							_Utils_Tuple2(author$project$Eval$Try$char, author$project$Eval$Try$setChar),
+							author$project$Eval$Encode$setChar,
+							A2(author$project$Eval$Core$Error$expected, fName, '[string-1, array(string-1)]'))));
+			case 'remove.int':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$remove,
+							_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$setInt),
+							author$project$Eval$Encode$setInt,
+							A2(author$project$Eval$Core$Error$expected, fName, '[integer, array(integer)]'))));
+			case 'remove.float':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$remove,
+							_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$setFloat),
+							author$project$Eval$Encode$setFloat,
+							A2(author$project$Eval$Core$Error$expected, fName, '[float, array(number)]'))));
+			case 'isEmpty':
+				return author$project$Eval$Core$List$lib(fName);
+			case 'member':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'member.string':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$member,
+							_Utils_Tuple2(author$project$Eval$Try$string, author$project$Eval$Try$setString),
+							author$project$Eval$Encode$bool,
+							A2(author$project$Eval$Core$Error$expected, fName, '[string, array(string)]'))));
+			case 'member.char':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$member,
+							_Utils_Tuple2(author$project$Eval$Try$char, author$project$Eval$Try$setChar),
+							author$project$Eval$Encode$bool,
+							A2(author$project$Eval$Core$Error$expected, fName, '[string-1, array(string-1)]'))));
+			case 'member.int':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$member,
+							_Utils_Tuple2(author$project$Eval$Try$int, author$project$Eval$Try$setInt),
+							author$project$Eval$Encode$bool,
+							A2(author$project$Eval$Core$Error$expected, fName, '[integer, array(integer)]'))));
+			case 'member.float':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$member,
+							_Utils_Tuple2(author$project$Eval$Try$float, author$project$Eval$Try$setFloat),
+							author$project$Eval$Encode$bool,
+							A2(author$project$Eval$Core$Error$expected, fName, '[float, array(number)]'))));
+			case 'size':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'size.string':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Set$size,
+							author$project$Eval$Try$setString,
+							author$project$Eval$Encode$int,
+							A2(author$project$Eval$Core$Error$expected, fName, 'array(string)]'))));
+			case 'size.char':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Set$size,
+							author$project$Eval$Try$setChar,
+							author$project$Eval$Encode$int,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(string-1)]'))));
+			case 'size.int':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Set$size,
+							author$project$Eval$Try$setInt,
+							author$project$Eval$Encode$int,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(integer)]'))));
+			case 'size.float':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Set$size,
+							author$project$Eval$Try$setFloat,
+							author$project$Eval$Encode$int,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(number)]'))));
+			case 'union':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'union.string':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$union,
+							_Utils_Tuple2(author$project$Eval$Try$setString, author$project$Eval$Try$setString),
+							author$project$Eval$Encode$setString,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(string), array(string)]'))));
+			case 'union.char':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$union,
+							_Utils_Tuple2(author$project$Eval$Try$setChar, author$project$Eval$Try$setChar),
+							author$project$Eval$Encode$setChar,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(string-1), array(string-1)]'))));
+			case 'union.int':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$union,
+							_Utils_Tuple2(author$project$Eval$Try$setInt, author$project$Eval$Try$setInt),
+							author$project$Eval$Encode$setInt,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(integer), array(integer)]'))));
+			case 'union.float':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$union,
+							_Utils_Tuple2(author$project$Eval$Try$setFloat, author$project$Eval$Try$setFloat),
+							author$project$Eval$Encode$setFloat,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(number), array(number)]'))));
+			case 'intersect':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'intersect.string':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$intersect,
+							_Utils_Tuple2(author$project$Eval$Try$setString, author$project$Eval$Try$setString),
+							author$project$Eval$Encode$setString,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(string), array(string)]'))));
+			case 'intersect.char':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$intersect,
+							_Utils_Tuple2(author$project$Eval$Try$setChar, author$project$Eval$Try$setChar),
+							author$project$Eval$Encode$setChar,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(string-1), array(string-1)]'))));
+			case 'intersect.int':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$intersect,
+							_Utils_Tuple2(author$project$Eval$Try$setInt, author$project$Eval$Try$setInt),
+							author$project$Eval$Encode$setInt,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(integer), array(integer)]'))));
+			case 'intersect.float':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$intersect,
+							_Utils_Tuple2(author$project$Eval$Try$setFloat, author$project$Eval$Try$setFloat),
+							author$project$Eval$Encode$setFloat,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(number), array(number)]'))));
+			case 'diff':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'diff.string':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$diff,
+							_Utils_Tuple2(author$project$Eval$Try$setString, author$project$Eval$Try$setString),
+							author$project$Eval$Encode$setString,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(string), array(string)]'))));
+			case 'diff.char':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$diff,
+							_Utils_Tuple2(author$project$Eval$Try$setChar, author$project$Eval$Try$setChar),
+							author$project$Eval$Encode$setChar,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(string-1), array(string-1)]'))));
+			case 'diff.int':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$diff,
+							_Utils_Tuple2(author$project$Eval$Try$setInt, author$project$Eval$Try$setInt),
+							author$project$Eval$Encode$setInt,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(integer), array(integer)]'))));
+			case 'diff.float':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F2(
+						A4(
+							author$project$Eval$Wrap$a2,
+							elm$core$Set$diff,
+							_Utils_Tuple2(author$project$Eval$Try$setFloat, author$project$Eval$Try$setFloat),
+							author$project$Eval$Encode$setFloat,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(number), array(number)]'))));
+			case 'toList':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'toList.string':
+				var $temp$fName = 'fromList.string';
+				fName = $temp$fName;
+				continue lib;
+			case 'toList.char':
+				var $temp$fName = 'fromList.char';
+				fName = $temp$fName;
+				continue lib;
+			case 'toList.int':
+				var $temp$fName = 'fromList.int';
+				fName = $temp$fName;
+				continue lib;
+			case 'toList.float':
+				var $temp$fName = 'fromList.float';
+				fName = $temp$fName;
+				continue lib;
+			case 'fromList':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noCompare(fName));
+			case 'fromList.string':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Basics$identity,
+							author$project$Eval$Try$setString,
+							author$project$Eval$Encode$setString,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(string)]'))));
+			case 'fromList.char':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Basics$identity,
+							author$project$Eval$Try$setChar,
+							author$project$Eval$Encode$setChar,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(string-1)]'))));
+			case 'fromList.int':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Basics$identity,
+							author$project$Eval$Try$setInt,
+							author$project$Eval$Encode$setInt,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(integer)]'))));
+			case 'fromList.float':
+				return elm$core$Result$Ok(
+					author$project$Eval$Function$F1(
+						A4(
+							author$project$Eval$Wrap$a1,
+							elm$core$Basics$identity,
+							author$project$Eval$Try$setFloat,
+							author$project$Eval$Encode$setFloat,
+							A2(author$project$Eval$Core$Error$expected, fName, '[array(number)]'))));
+			case 'map':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noFunction(fName));
+			case 'foldl':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noFunction(fName));
+			case 'foldr':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noFunction(fName));
+			case 'filter':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noFunction(fName));
+			case 'partition':
+				return elm$core$Result$Err(
+					author$project$Eval$Core$Error$noFunction(fName));
+			default:
+				return elm$core$Result$Err(
+					A2(author$project$Eval$Core$Error$notFound, 'Set', fName));
+		}
+	}
+};
 var author$project$Eval$Core$lib = function (expression) {
 	var parts = A2(elm$core$String$split, '.', expression);
 	var _n0 = function () {
-		var _n1 = _Utils_Tuple3(
-			elm$core$List$length(parts),
-			parts,
-			A2(elm$core$List$drop, 1, parts));
-		_n1$2:
-		while (true) {
-			if (_n1.b.b) {
-				if (!_n1.c.b) {
-					if (_n1.a === 1) {
-						var _n2 = _n1.b;
-						var first = _n2.a;
-						var rest = _n2.b;
-						return _Utils_Tuple2('Basics', first);
-					} else {
-						break _n1$2;
-					}
-				} else {
-					if ((_n1.a === 2) && (!_n1.c.b.b)) {
-						var _n3 = _n1.b;
-						var first = _n3.a;
-						var rest = _n3.b;
-						var _n4 = _n1.c;
-						var second = _n4.a;
-						return _Utils_Tuple2(first, second);
-					} else {
-						break _n1$2;
-					}
-				}
+		if (!parts.b) {
+			return _Utils_Tuple2('Basics', '');
+		} else {
+			if (!parts.b.b) {
+				var first = parts.a;
+				return _Utils_Tuple2('Basics', first);
 			} else {
-				break _n1$2;
+				var first = parts.a;
+				var rest = parts.b;
+				return _Utils_Tuple2(
+					first,
+					A2(elm$core$String$join, '.', rest));
 			}
 		}
-		return _Utils_Tuple2('', '');
 	}();
 	var moduleName = _n0.a;
 	var fName = _n0.b;
@@ -5633,6 +6229,8 @@ var author$project$Eval$Core$lib = function (expression) {
 			return author$project$Eval$Core$List$lib(fName);
 		case 'Array':
 			return author$project$Eval$Core$Array$lib(fName);
+		case 'Set':
+			return author$project$Eval$Core$Set$lib(fName);
 		case 'Dict':
 			return author$project$Eval$Core$Dict$lib(fName);
 		default:
@@ -5649,7 +6247,6 @@ var author$project$Eval$Resolve$list = A2(
 				elm$json$Json$Decode$list(elm$json$Json$Decode$value)),
 			elm$core$Result$toMaybe)),
 	elm$core$Maybe$withDefault(_List_Nil));
-var elm$json$Json$Decode$string = _Json_decodeString;
 var author$project$Eval$Resolve$string = A2(
 	elm$core$Basics$composeR,
 	elm$core$Maybe$andThen(
@@ -5676,7 +6273,6 @@ var author$project$Eval$Call$parse = function (object) {
 };
 var author$project$Eval$parse = author$project$Eval$Call$parse;
 var author$project$Main$Receive = elm$core$Basics$identity;
-var elm$json$Json$Encode$string = _Json_wrap;
 var author$project$Main$encodeResult = function (result) {
 	if (!result.$) {
 		var value = result.a;
@@ -5705,9 +6301,6 @@ var author$project$Main$encodeResult = function (result) {
 	}
 };
 var author$project$Main$incoming = _Platform_incomingPort('incoming', elm$json$Json$Decode$value);
-var elm$core$Basics$identity = function (x) {
-	return x;
-};
 var author$project$Main$outgoing = _Platform_outgoingPort('outgoing', elm$core$Basics$identity);
 var elm$core$List$singleton = function (value) {
 	return _List_fromArray(

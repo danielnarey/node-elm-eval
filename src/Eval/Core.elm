@@ -3,20 +3,12 @@ module Eval.Core exposing
 
 
 -- Project
-import Eval.Function exposing (Function(..))
-import Eval.Try as Try
-import Eval.Wrap as Wrap
-import Eval.Core.Basics
-import Eval.Core.List
 import Eval.Core.Array
+import Eval.Core.Basics
 import Eval.Core.Dict
-
--- Core
-import Array
-import Set
-import Dict exposing (Dict)
-import Json.Decode exposing (Value)
-import Json.Encode as Encode
+import Eval.Core.List
+import Eval.Core.Set
+import Eval.Function exposing (Function(..))
 
 
 {-| Given the name of a function in the Elm Core library, return an equivalent
@@ -31,13 +23,13 @@ lib expression =
         |> String.split "."
 
     (moduleName, fName) =
-      case (parts |> List.length, parts, parts |> List.drop 1) of
-        (1, first :: rest, []) ->
+      case parts of
+        [] ->
+          ("Basics", "")
+        first :: [] ->
           ("Basics", first)
-        (2, first :: rest, second :: []) ->
-          (first, second)
-        (_, _, _) ->
-          ("", "")
+        first :: rest ->
+          (first, rest |> String.join ".")
 
   in
     case moduleName of
@@ -49,6 +41,9 @@ lib expression =
 
       "Array" ->
         Eval.Core.Array.lib fName
+
+      "Set" ->
+        Eval.Core.Set.lib fName
 
       "Dict" ->
         Eval.Core.Dict.lib fName

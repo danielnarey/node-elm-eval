@@ -1,6 +1,7 @@
 module Eval.Try exposing
   ( field
   , string
+  , char
   , int
   , float
   , bool
@@ -14,6 +15,10 @@ module Eval.Try exposing
   , listTuple3
   , listDict
   , array
+  , setString
+  , setChar
+  , setInt
+  , setFloat
   , dict
   , empty
   , singleton
@@ -23,9 +28,10 @@ module Eval.Try exposing
 
 
 import Array exposing (Array)
+import Set exposing (Set)
 import Dict exposing (Dict)
-import Json.Decode as Decode exposing (Value)
-import Json.Encode as Encode
+import Json.Encode as Encode exposing (Value)
+import Json.Decode as Decode
 
 
 field : String -> Value -> Maybe Value
@@ -38,6 +44,22 @@ string : Value -> Maybe String
 string =
   Decode.decodeValue Decode.string
     >> Result.toMaybe
+
+
+char : Value -> Maybe Char
+char =
+  let
+    singleChar s =
+      case (s |> String.toList) of
+        first :: [] ->
+          Just first
+        _ ->
+          Nothing
+
+  in
+    Decode.decodeValue Decode.string
+      >> Result.toMaybe
+      >> Maybe.andThen singleChar
 
 
 int : Value -> Maybe Int
@@ -143,11 +165,54 @@ array =
     >> Result.toMaybe
 
 
+setString : Value -> Maybe (Set String)
+setString =
+  Decode.decodeValue (Decode.list Decode.string)
+    >> Result.toMaybe
+    >> Maybe.map Set.fromList
+
+
+setChar : Value -> Maybe (Set Char)
+setChar =
+  let
+    resolveMaybes ls =
+      case (ls |> List.member Nothing) of
+        True ->
+          Nothing
+
+        False ->
+          ls
+            |> List.map (Maybe.withDefault '!')
+            |> Just
+
+  in
+    Decode.decodeValue (Decode.list (Decode.value |> Decode.map char))
+      >> Result.toMaybe
+      >> Maybe.andThen resolveMaybes
+      >> Maybe.map Set.fromList
+
+
+setInt : Value -> Maybe (Set Int)
+setInt =
+  Decode.decodeValue (Decode.list Decode.int)
+    >> Result.toMaybe
+    >> Maybe.map Set.fromList
+
+
+setFloat : Value -> Maybe (Set Float)
+setFloat =
+  Decode.decodeValue (Decode.list Decode.float)
+    >> Result.toMaybe
+    >> Maybe.map Set.fromList
+
+
 dict : Value -> Maybe (Dict String Value)
 dict =
   Decode.decodeValue (Decode.dict Decode.value)
     >> Result.toMaybe
 
+
+--- List Helpers
 
 empty : List Value -> Maybe ()
 empty ls =

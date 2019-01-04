@@ -240,3 +240,70 @@ test('Array.set 3 9 [1, 2, 3]', async (t) => {
     { instanceOf: TypeError },
   );
 });
+
+test('Set.empty', async (t) => {
+  const result = await expr('Set.empty');
+
+  t.deepEqual(result, []);
+});
+
+test('Set.singleton.string "a"', async (t) => {
+  const result = await expr('Set.singleton.string', 'a');
+
+  t.deepEqual(result, ['a']);
+});
+
+test('Set.singleton.int 3.0', async (t) => {
+  await t.throwsAsync(
+    expr('Set.singleton.string', 3.0),
+    { instanceOf: TypeError },
+  );
+});
+
+test('Set.insert.int 3 [1, 1, 1, 2, 2]', async (t) => {
+  const result = await expr('Set.insert.int', 3, [1, 1, 1, 2, 2]);
+
+  t.deepEqual(result, [1, 2, 3]);
+});
+
+test('Set.insert.int 1 [1, 1, 1, 2, 2]', async (t) => {
+  const result = await expr('Set.insert.int', 1, [1, 1, 1, 2, 2]);
+
+  t.deepEqual(result, [1, 2]);
+});
+
+test('Set.remove.string "a" ["a", "a", "a", "b", "b"]', async (t) => {
+  const result = await expr('Set.remove.string', 'a', ['a', 'a', 'a', 'b', 'b']);
+
+  t.deepEqual(result, ['b']);
+});
+
+test('Set.remove.string "c" ["a", "a", "a", "b", "b"]', async (t) => {
+  const result = await expr('Set.remove.string', 'c', ['a', 'a', 'a', 'b', 'b']);
+
+  t.deepEqual(result, ['a', 'b']);
+});
+
+test('Set.size.int [1, 1, 1, 2, 2]', async (t) => {
+  const result = await expr('Set.size.int', [1, 1, 1, 2, 2]);
+
+  t.is(result, 2);
+});
+
+test('Set.union.int [1, 2] [1, 3]', async (t) => {
+  const result = await expr('Set.union.int', [1, 2], [1, 3]);
+
+  t.deepEqual(result, [1, 2, 3]);
+});
+
+test('Set.union.float [1, 2, 3] [3.0]', async (t) => {
+  const result = await expr('Set.union.float', [1, 2, 3], [3.0]);
+
+  t.deepEqual(result, [1, 2, 3]);
+});
+
+test('Set.fromList.string ["a", "a", "a", "b", "b"]', async (t) => {
+  const result = await expr('Set.fromList.string', ['a', 'a', 'a', 'b', 'b']);
+
+  t.deepEqual(result, ['a', 'b']);
+});

@@ -3,22 +3,22 @@ module Eval.Core.Array exposing
 
 
 -- Project
+import Eval.Core.Error as Error
+import Eval.Encode as Encode
 import Eval.Function exposing (Function(..))
 import Eval.Try as Try
 import Eval.Wrap as Wrap
-import Eval.Core.Error as Error
 
 -- Core
 import Array
-import Json.Decode exposing (Value)
-import Json.Encode as Encode
+import Json.Encode exposing (Value)
 
 
 lib : String -> Result String Function
 lib fName =
   case fName of
     "empty" ->
-      Wrap.a0 (\() -> Array.empty) (Encode.array (\v -> v))
+      Wrap.a0 (\() -> Array.empty) Encode.array
         |> F0
         |> Ok
 
@@ -26,12 +26,12 @@ lib fName =
       Err (Error.noFunction fName)
 
     "repeat" ->
-      Wrap.a2 Array.repeat (Try.int, Just) (Encode.array (\v -> v)) (Error.expected fName "[integer, any]")
+      Wrap.a2 Array.repeat (Try.int, Just) Encode.array (Error.expected fName "[integer, any]")
         |> F2
         |> Ok
 
     "fromList" ->
-      Wrap.a1 Array.fromList Try.list (Encode.array (\v -> v)) (Error.expected fName "[array]")
+      Wrap.a1 Array.fromList Try.list Encode.array (Error.expected fName "[array]")
         |> F1
         |> Ok
 
@@ -77,7 +77,7 @@ lib fName =
               Just _ ->
                 array
                   |> Array.set index b
-                  |> Encode.array (\v -> v)
+                  |> Encode.array
                   |> Ok
 
               Nothing ->
@@ -97,19 +97,44 @@ lib fName =
         |> Ok
 
     "push" ->
-      Wrap.a2 Array.push (Just, Try.array) (Encode.array (\v -> v)) (Error.expected fName "[any, array]")
+      Wrap.a2 Array.push (Just, Try.array) Encode.array (Error.expected fName "[any, array]")
         |> F2
         |> Ok
 
     "append" ->
-      Wrap.a2 Array.append (Try.array, Try.array) (Encode.array (\v -> v)) (Error.expected fName "[array, array]")
+      Wrap.a2 Array.append (Try.array, Try.array) Encode.array (Error.expected fName "[array, array]")
         |> F2
         |> Ok
 
     "slice" ->
-      Wrap.a3 Array.slice (Try.int, Try.int, Try.array) (Encode.array (\v -> v)) (Error.expected fName "[integer, integer, array]")
+      Wrap.a3 Array.slice (Try.int, Try.int, Try.array) Encode.array (Error.expected fName "[integer, integer, array]")
         |> F3
         |> Ok
+
+    "toList" ->
+      Wrap.a1 Array.toList Try.array Encode.list (Error.expected fName "[array]")
+        |> F1
+        |> Ok
+
+    "toIndexedList" ->
+      Wrap.a1 Array.toIndexedList Try.array (Encode.listTuple2 (Encode.int, Encode.value)) (Error.expected fName "[array]")
+        |> F1
+        |> Ok
+
+    "map" ->
+      Err (Error.noFunction fName)
+
+    "indexedMap" ->
+      Err (Error.noFunction fName)
+
+    "foldl" ->
+      Err (Error.noFunction fName)
+
+    "foldr" ->
+      Err (Error.noFunction fName)
+
+    "filter" ->
+      Err (Error.noFunction fName)
 
     _ ->
       Err (Error.notFound "Array" fName)
