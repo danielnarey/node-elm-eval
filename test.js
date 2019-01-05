@@ -215,17 +215,30 @@ test('Array.isEmpty []', async (t) => {
   t.true(result);
 });
 
-test('Array.get 2 [1, 2, 3]', async (t) => {
-  const result = await expr('Array.get', 2, [1, 2, 3]);
+test('Array.get 2 ["a", 2, 3]', async (t) => {
+  const result = await expr('Array.get', 2, ['a', 2, 3]);
 
   t.is(result, 3);
 });
 
-test('Array.get 3 [1, 2, 3]', async (t) => {
+test('Array.get 3 ["a", 2, 3]', async (t) => {
   await t.throwsAsync(
-    expr('Array.get', 3, [1, 2, 3]),
+    expr('Array.get.int', 3, ['a', 2, 3]),
     { instanceOf: TypeError },
   );
+});
+
+test('Array.get.int 3 ["a", 2, 3]', async (t) => {
+  await t.throwsAsync(
+    expr('Array.get.int', 3, ['a', 2, 3]),
+    { instanceOf: TypeError },
+  );
+});
+
+test('Array.get.int 2 [1, 2, 3]', async (t) => {
+  const result = await expr('Array.get', 2, [1, 2, 3]);
+
+  t.is(result, 3);
 });
 
 test('Array.set 2 9 [1, 2, 3]', async (t) => {
