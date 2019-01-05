@@ -307,3 +307,15 @@ test('Set.fromList.string ["a", "a", "a", "b", "b"]', async (t) => {
 
   t.deepEqual(result, ['a', 'b']);
 });
+
+test('Tuple.pair "a" 1', async (t) => {
+  const result = await expr('Tuple.pair', 'a', 1);
+
+  t.deepEqual(result, ['a', 1]);
+});
+
+test('Tuple.first ["a", 1]', async (t) => {
+  const result = await expr('Tuple.first', ['a', 1]);
+
+  t.is(result, 'a');
+});
