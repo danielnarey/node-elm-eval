@@ -16,6 +16,50 @@ import Json.Encode exposing (Value)
 
 lib : String -> Result String Function
 lib fName =
+  let
+    getter db encoder tb (a, b) =
+      case (Try.int a, db b) of
+        (Just index, Just array) ->
+          case (array |> Array.get index) of
+            Just value ->
+              Ok (encoder value)
+
+            Nothing ->
+              Err (
+                "Can't get the element at index "
+                ++ (index |> String.fromInt)
+                ++ " from an array of length "
+                ++ (array |> Array.length |> String.fromInt)
+                ++ "."
+              )
+
+        (_, _) ->
+          Err (Error.expected fName ("[int, " ++ tb ++ "]"))
+
+    setter (db, dc) encoder (tb, tc) (a, b, c) =
+      case (Try.int a, db b, dc c) of
+        (Just index, Just value, Just array) ->
+          case (array |> Array.get index) of
+            Just _ ->
+              array
+                |> Array.set index value
+                |> encoder
+                |> Ok
+
+            Nothing ->
+              Err (
+                "Can't set the element at index "
+                ++ (index |> String.fromInt)
+                ++ " on an array of length "
+                ++ (array |> Array.length |> String.fromInt)
+                ++ "."
+              )
+
+        (_, _, _) ->
+          Err (Error.expected fName ("[int, " ++ tb ++ ", " ++ tc ++ "]"))
+
+
+  in
   case fName of
     "empty" ->
       Wrap.a0 (\() -> Array.empty) Encode.array
@@ -46,53 +90,52 @@ lib fName =
         |> Ok
 
     "get" ->
-      ( \(a, b) ->
-        case (a |> Try.int, b |> Try.array) of
-          (Just index, Just array) ->
-            case (array |> Array.get index) of
-              Just value ->
-                Ok value
+      getter Try.array Encode.value "array"
+        |> F2
+        |> Ok
 
-              Nothing ->
-                Err (
-                  "Can't get the element at index "
-                  ++ (index |> String.fromInt)
-                  ++ " from an array of length "
-                  ++ (array |> Array.length |> String.fromInt)
-                  ++ "."
-                )
+    "get.string" ->
+      getter Try.arrayString Encode.string "array(string)"
+        |> F2
+        |> Ok
 
-          (_, _) ->
-            Err (Error.expected fName "[int, array]")
+    "get.char" ->
+      getter Try.arrayChar Encode.char "array(char)"
+        |> F2
+        |> Ok
 
-      )
+    "get.int" ->
+      getter Try.arrayInt Encode.int "array(int)"
+        |> F2
+        |> Ok
+
+    "get.float" ->
+      getter Try.arrayFloat Encode.float "array(float)"
         |> F2
         |> Ok
 
     "set" ->
-      ( \(a, b, c) ->
-        case (a |> Try.int, c |> Try.array) of
-          (Just index, Just array) ->
-            case (array |> Array.get index) of
-              Just _ ->
-                array
-                  |> Array.set index b
-                  |> Encode.array
-                  |> Ok
+      setter (Just, Try.array) Encode.array ("value", "array")
+        |> F3
+        |> Ok
 
-              Nothing ->
-                Err (
-                  "Can't set the element at index "
-                  ++ (index |> String.fromInt)
-                  ++ " on an array of length "
-                  ++ (array |> Array.length |> String.fromInt)
-                  ++ "."
-                )
+    "set.string" ->
+      setter (Try.string, Try.arrayString) Encode.arrayString ("string", "array(string)")
+        |> F3
+        |> Ok
 
-          (_, _) ->
-            Err (Error.expected fName "[int, any, array]")
+    "set.char" ->
+      setter (Try.char, Try.arrayChar) Encode.arrayChar ("string-1", "array(string-1)")
+        |> F3
+        |> Ok
 
-      )
+    "set.int" ->
+      setter (Try.int, Try.arrayInt) Encode.arrayInt ("integer", "array(integer)")
+        |> F3
+        |> Ok
+
+    "set.float" ->
+      setter (Try.float, Try.arrayFloat) Encode.arrayFloat ("number", "array(number)")
         |> F3
         |> Ok
 
@@ -101,8 +144,48 @@ lib fName =
         |> F2
         |> Ok
 
+    "push.string" ->
+      Wrap.a2 Array.push (Try.string, Try.arrayString) Encode.arrayString (Error.expected fName "[string, array(string)]")
+        |> F2
+        |> Ok
+
+    "push.char" ->
+      Wrap.a2 Array.push (Try.char, Try.arrayChar) Encode.arrayChar (Error.expected fName "[string-1, array(string-1)]")
+        |> F2
+        |> Ok
+
+    "push.int" ->
+      Wrap.a2 Array.push (Try.int, Try.arrayInt) Encode.arrayInt (Error.expected fName "[integer, array(integer)]")
+        |> F2
+        |> Ok
+
+    "push.float" ->
+      Wrap.a2 Array.push (Try.float, Try.arrayFloat) Encode.arrayFloat (Error.expected fName "[float, array(float)]")
+        |> F2
+        |> Ok
+
     "append" ->
       Wrap.a2 Array.append (Try.array, Try.array) Encode.array (Error.expected fName "[array, array]")
+        |> F2
+        |> Ok
+
+    "append.string" ->
+      Wrap.a2 Array.append (Try.arrayString, Try.arrayString) Encode.arrayString (Error.expected fName "[array(string), array(string)]")
+        |> F2
+        |> Ok
+
+    "append.char" ->
+      Wrap.a2 Array.append (Try.arrayChar, Try.arrayChar) Encode.arrayChar (Error.expected fName "[array(string-1), array(string-1)]")
+        |> F2
+        |> Ok
+
+    "append.int" ->
+      Wrap.a2 Array.append (Try.arrayInt, Try.arrayInt) Encode.arrayInt (Error.expected fName "[array(integer), array(integer)]")
+        |> F2
+        |> Ok
+
+    "append.float" ->
+      Wrap.a2 Array.append (Try.arrayFloat, Try.arrayFloat) Encode.arrayFloat (Error.expected fName "[array(number), array(number)]")
         |> F2
         |> Ok
 

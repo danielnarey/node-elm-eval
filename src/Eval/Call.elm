@@ -9,6 +9,7 @@ module Eval.Call exposing
 import Eval.Function exposing (Function(..))
 import Eval.Resolve as Resolve
 import Eval.Try as Try
+import Eval.Try.List as TryList
 
 -- Core
 import Json.Encode exposing (Value)
@@ -43,7 +44,7 @@ fromLib lib call =
       case f of
         F0 f0 ->
           call.args
-            |> Try.empty
+            |> TryList.empty
             |> Result.fromMaybe (
               "The `"
               ++ call.f
@@ -55,7 +56,7 @@ fromLib lib call =
 
         F1 f1 ->
           call.args
-            |> Try.singleton
+            |> TryList.singleton
             |> Result.fromMaybe (
               "The `"
               ++ call.f
@@ -67,7 +68,7 @@ fromLib lib call =
 
         F2 f2 ->
           call.args
-            |> Try.tuple2
+            |> TryList.tuple2
             |> Result.fromMaybe (
               "The `"
               ++ call.f
@@ -79,7 +80,7 @@ fromLib lib call =
 
         F3 f3 ->
           call.args
-            |> Try.tuple3
+            |> TryList.tuple3
             |> Result.fromMaybe (
               "The `"
               ++ call.f

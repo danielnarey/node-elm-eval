@@ -8,6 +8,7 @@ import Eval.Core.Basics
 import Eval.Core.Dict
 import Eval.Core.List
 import Eval.Core.Set
+import Eval.Core.Tuple
 import Eval.Function exposing (Function(..))
 
 
@@ -26,27 +27,32 @@ lib expression =
       case parts of
         [] ->
           ("Basics", "")
+          
         first :: [] ->
           ("Basics", first)
+
         first :: rest ->
           (first, rest |> String.join ".")
 
   in
     case moduleName of
+      "Array" ->
+        Eval.Core.Array.lib fName
+
       "Basics" ->
         Eval.Core.Basics.lib fName
+
+      "Dict" ->
+        Eval.Core.Dict.lib fName
 
       "List" ->
         Eval.Core.List.lib fName
 
-      "Array" ->
-        Eval.Core.Array.lib fName
-
       "Set" ->
         Eval.Core.Set.lib fName
 
-      "Dict" ->
-        Eval.Core.Dict.lib fName
+      "Tuple" ->
+        Eval.Core.Tuple.lib fName
 
       _ ->
         Err (

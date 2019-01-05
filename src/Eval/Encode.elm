@@ -1,13 +1,13 @@
 module Eval.Encode exposing
   ( value
   , string
+  , char
   , int
   , float
   , bool
   , tuple2
   , tuple3
   , list
-  , array
   , listString
   , listInt
   , listFloat
@@ -15,6 +15,11 @@ module Eval.Encode exposing
   , listList
   , listTuple2
   , listTuple3
+  , array
+  , arrayString
+  , arrayChar
+  , arrayInt
+  , arrayFloat
   , setString
   , setChar
   , setInt
@@ -36,6 +41,11 @@ value v =
 string : String -> Value
 string =
   Encode.string
+
+
+char : Char -> Value
+char =
+  String.fromChar >> Encode.string
 
 
 int : Int -> Value
@@ -68,11 +78,6 @@ tuple3 (da, db, dc) (a, b, c) =
 list : List Value -> Value
 list =
   Encode.list (\v -> v)
-
-
-array : Array Value -> Value
-array =
-  Encode.array (\v -> v)
 
 
 listString : List String -> Value
@@ -108,6 +113,31 @@ listTuple2 (da, db) =
 listTuple3 : (a -> Value, b -> Value, c -> Value) -> List (a, b, c) -> Value
 listTuple3 (da, db, dc) =
   Encode.list (\(a,b,c) -> [da a, db b, dc c] |> Encode.list (\v -> v))
+
+
+array : Array Value -> Value
+array =
+  Encode.array (\v -> v)
+
+
+arrayString : Array String -> Value
+arrayString =
+  Encode.array Encode.string
+
+
+arrayChar : Array Char -> Value
+arrayChar =
+  Encode.array (String.fromChar >> Encode.string)
+
+
+arrayInt : Array Int -> Value
+arrayInt =
+  Encode.array Encode.int
+
+
+arrayFloat : Array Float -> Value
+arrayFloat =
+  Encode.array Encode.float
 
 
 setString : Set String -> Value

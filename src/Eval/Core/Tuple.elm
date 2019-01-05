@@ -17,18 +17,18 @@ lib : String -> Result String Function
 lib fName =
   case fName of
     "pair" ->
-      Wrap.a2 Tuple.pair (Just, Just) Encode.tuple2 (Error.expected fName "[any, any]")
+      Wrap.a2 Tuple.pair (Just, Just) (Encode.tuple2 (Encode.value, Encode.value)) (Error.expected fName "[any, any]")
         |> F2
         |> Ok
 
     "first" ->
-      Wrap.a2 Tuple.first (Try.list >> Try.tuple2) Encode.value (Error.expected fName "[array-2]")
-        |> F2
+      Wrap.a1 Tuple.first (Try.tuple2) Encode.value (Error.expected fName "[array-2]")
+        |> F1
         |> Ok
 
     "second" ->
-      Wrap.a2 Tuple.second (Try.list >> Try.tuple2) Encode.value (Error.expected fName "[array-2]")
-        |> F2
+      Wrap.a1 Tuple.second (Try.tuple2) Encode.value (Error.expected fName "[array-2]")
+        |> F1
         |> Ok
 
     "mapFirst" ->

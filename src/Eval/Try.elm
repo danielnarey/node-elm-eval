@@ -5,6 +5,8 @@ module Eval.Try exposing
   , int
   , float
   , bool
+  , tuple2
+  , tuple3
   , list
   , listString
   , listInt
@@ -15,23 +17,27 @@ module Eval.Try exposing
   , listTuple3
   , listDict
   , array
+  , arrayString
+  , arrayChar
+  , arrayInt
+  , arrayFloat
   , setString
   , setChar
   , setInt
   , setFloat
   , dict
-  , empty
-  , singleton
-  , tuple2
-  , tuple3
   )
 
 
+-- Project
+import Eval.Try.List as TryList
+
+-- Core
 import Array exposing (Array)
-import Set exposing (Set)
 import Dict exposing (Dict)
-import Json.Encode as Encode exposing (Value)
+import Set exposing (Set)
 import Json.Decode as Decode
+import Json.Encode as Encode exposing (Value)
 
 
 field : String -> Value -> Maybe Value
@@ -57,9 +63,7 @@ char =
           Nothing
 
   in
-    Decode.decodeValue Decode.string
-      >> Result.toMaybe
-      >> Maybe.andThen singleChar
+    string >> Maybe.andThen singleChar
 
 
 int : Value -> Maybe Int
@@ -78,6 +82,17 @@ bool : Value -> Maybe Bool
 bool =
   Decode.decodeValue Decode.bool
     >> Result.toMaybe
+
+
+tuple2 : Value -> Maybe (Value, Value)
+tuple2 =
+  list >> Maybe.andThen TryList.tuple2
+
+
+tuple3 : Value -> Maybe (Value, Value, Value)
+tuple3 =
+  list >> Maybe.andThen TryList.tuple3
+
 
 list : Value -> Maybe (List Value)
 list =
@@ -130,7 +145,7 @@ listTuple2 =
 
   in
     listList
-      >> Maybe.map (List.map tuple2)
+      >> Maybe.map (List.map TryList.tuple2)
       >> Maybe.andThen resolveMaybes
 
 
@@ -149,7 +164,7 @@ listTuple3 =
 
   in
     listList
-      >> Maybe.map (List.map tuple3)
+      >> Maybe.map (List.map TryList.tuple3)
       >> Maybe.andThen resolveMaybes
 
 
@@ -162,6 +177,44 @@ listDict =
 array : Value -> Maybe (Array Value)
 array =
   Decode.decodeValue (Decode.array Decode.value)
+    >> Result.toMaybe
+
+
+arrayString : Value -> Maybe (Array String)
+arrayString =
+  Decode.decodeValue (Decode.array Decode.string)
+    >> Result.toMaybe
+
+
+arrayChar : Value -> Maybe (Array Char)
+arrayChar =
+  let
+    resolveMaybes ls =
+      case (ls |> List.member Nothing) of
+        True ->
+          Nothing
+
+        False ->
+          ls
+            |> List.map (Maybe.withDefault '!')
+            |> Just
+
+  in
+    Decode.decodeValue (Decode.list (Decode.value |> Decode.map char))
+      >> Result.toMaybe
+      >> Maybe.andThen resolveMaybes
+      >> Maybe.map Array.fromList
+
+
+arrayInt : Value -> Maybe (Array Int)
+arrayInt =
+  Decode.decodeValue (Decode.array Decode.int)
+    >> Result.toMaybe
+
+
+arrayFloat : Value -> Maybe (Array Float)
+arrayFloat =
+  Decode.decodeValue (Decode.array Decode.float)
     >> Result.toMaybe
 
 
@@ -210,41 +263,3 @@ dict : Value -> Maybe (Dict String Value)
 dict =
   Decode.decodeValue (Decode.dict Decode.value)
     >> Result.toMaybe
-
-
---- List Helpers
-
-empty : List Value -> Maybe ()
-empty ls =
-  case ls of
-    [] ->
-      Just ()
-    _ ->
-      Nothing
-
-
-singleton : List Value -> Maybe Value
-singleton ls =
-  case ls of
-    first :: [] ->
-      Just first
-    _ ->
-      Nothing
-
-
-tuple2 : List Value -> Maybe (Value, Value)
-tuple2 ls =
-  case (ls, ls |> List.drop 1) of
-    (first :: rest, second :: []) ->
-      Just (first, second)
-    (_, _) ->
-      Nothing
-
-
-tuple3 : List Value -> Maybe (Value, Value, Value)
-tuple3 ls =
-  case (ls, ls |> List.drop 1, ls |> List.drop 2) of
-    (first :: slice1, second :: slice2, third :: []) ->
-      Just (first, second, third)
-    (_, _, _) ->
-      Nothing

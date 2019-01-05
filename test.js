@@ -319,3 +319,10 @@ test('Tuple.first ["a", 1]', async (t) => {
 
   t.is(result, 'a');
 });
+
+test('Tuple.first ["a", 1, 3.5]', async (t) => {
+  await t.throwsAsync(
+    expr('Tuple.first', ['a', 1, 3.5]),
+    { instanceOf: TypeError },
+  );
+});
