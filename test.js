@@ -241,15 +241,28 @@ test('Array.get.int 2 [1, 2, 3]', async (t) => {
   t.is(result, 3);
 });
 
-test('Array.set 2 9 [1, 2, 3]', async (t) => {
-  const result = await expr('Array.set', 2, 9, [1, 2, 3]);
+test('Array.set.int 2 9 [1, 2, 3]', async (t) => {
+  const result = await expr('Array.set.int', 2, 9, [1, 2, 3]);
 
   t.deepEqual(result, [1, 2, 9]);
 });
 
-test('Array.set 3 9 [1, 2, 3]', async (t) => {
+test('Array.set.int 3 9 [1, 2, 3]', async (t) => {
   await t.throwsAsync(
     expr('Array.set', 3, 9, [1, 2, 3]),
+    { instanceOf: TypeError },
+  );
+});
+
+test('Array.set 2 9 [1, 2, "c"]', async (t) => {
+  const result = await expr('Array.set', 2, 9, [1, 2, 'c']);
+
+  t.deepEqual(result, [1, 2, 9]);
+});
+
+test('Array.set.int 2 9 [1, 2, "c"]', async (t) => {
+  await t.throwsAsync(
+    expr('Array.set.int', 2, 9, [1, 2, 'c']),
     { instanceOf: TypeError },
   );
 });
