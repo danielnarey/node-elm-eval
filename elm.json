@@ -1,7 +1,7 @@
 {
     "type": "application",
-    "name": "visotype/elm-eval",
-    "summary": "Pass function calls as data from JavaScript to Elm",
+    "name": "visotype/elm-node-eval",
+    "summary": "A port module to support JS-Elm interop with visotype/elm-eval",
     "license": "BSD-2-Clause",
     "version": "1.0.0",
     "source-directories": [
@@ -11,7 +11,8 @@
     "dependencies": {
         "direct": {
           "elm/core": "1.0.2",
-          "elm/json": "1.1.2"
+          "elm/json": "1.1.2",
+          "visotype/elm-eval": "1.0.0"
         },
         "indirect": {}
     },

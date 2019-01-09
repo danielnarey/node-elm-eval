@@ -1,8 +1,7 @@
 port module Main exposing (main)
 
--- Project
+-- visotype/elm-eval
 import Eval
-import Eval.Call exposing (Call)
 
 -- Core
 import Platform.Sub
@@ -17,6 +16,12 @@ port outgoing : Value -> Cmd msg
 
 type Msg
   = Receive Value
+
+
+type alias Call =
+  { f : String
+  , args : List Value
+  }
 
 
 main : Program () (Maybe Call) Msg
