@@ -352,3 +352,78 @@ test('Tuple.first ["a", 1, 3.5]', async (t) => {
     { instanceOf: TypeError },
   );
 });
+
+test('Dict.empty', async (t) => {
+  const result = await expr('Dict.empty');
+
+  t.deepEqual(result, {});
+});
+
+test('Dict.singleton "a" 1', async (t) => {
+  const result = await expr('Dict.singleton', 'a', 1);
+
+  t.deepEqual(result, { a: 1 });
+});
+
+test('Dict.singleton 1 1', async (t) => {
+  await t.throwsAsync(
+    expr('Dict.singleton', 1, 1),
+    { instanceOf: TypeError },
+  );
+});
+
+test('Dict.insert "b" 2 { a: 1 }', async (t) => {
+  const result = await expr('Dict.insert', 'b', 2, { a: 1 });
+
+  t.deepEqual(result, { a: 1, b: 2 });
+});
+
+test('Dict.get "a" { a: 1 }', async (t) => {
+  const result = await expr('Dict.get', 'a', { a: 1 });
+
+  t.is(result, 1);
+});
+
+test('Dict.get.string "a" { a: 1 }', async (t) => {
+  await t.throwsAsync(
+    expr('Dict.get.string', 'a', { a: 1 }),
+    { instanceOf: TypeError },
+  );
+});
+
+test('Dict.toList { a: 1, b: 2 }', async (t) => {
+  const result = await expr('Dict.toList', { a: 1, b: 2 });
+
+  t.deepEqual(result, [['a', 1], ['b', 2]]);
+});
+
+test('Dict.union { a: 1, b: 2 } { b: 3, c: 4 }', async (t) => {
+  const result = await expr('Dict.union', { a: 1, b: 2 }, { b: 3, c: 4 });
+
+  t.deepEqual(result, { a: 1, b: 2, c: 4 });
+});
+
+test('Char.toCode "😃"', async (t) => {
+  const result = await expr('Char.toCode', '😃');
+
+  t.is(result, 0x1F603);
+});
+
+test('Char.fromCode 0x1F603', async (t) => {
+  const result = await expr('Char.fromCode', 0x1F603);
+
+  t.is(result, '😃');
+});
+
+test('String.toInt "3"', async (t) => {
+  const result = await expr('String.toInt', '3');
+
+  t.is(result, 3);
+});
+
+test('String.toInt "3.0"', async (t) => {
+  await t.throwsAsync(
+    expr('String.toInt', '3.0'),
+    { instanceOf: TypeError },
+  );
+});

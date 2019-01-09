@@ -3,6 +3,7 @@ module Eval.Try.List exposing
   , singleton
   , tuple2
   , tuple3
+  , keyValue
   )
 
 
@@ -48,4 +49,19 @@ tuple3 ls =
       Just (first, second, third)
 
     (_, _, _) ->
+      Nothing
+
+
+keyValue : List Value -> Maybe (String, Value)
+keyValue ls =
+  case (ls, ls |> List.drop 1) of
+    (first :: rest, second :: []) ->
+      case (first |> Decode.decodeValue Decode.string |> Result.toMaybe) of
+        Just key ->
+          Just (key, second)
+
+        Nothing ->
+          Nothing
+
+    (_, _) ->
       Nothing

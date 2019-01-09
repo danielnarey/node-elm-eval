@@ -9,6 +9,7 @@ module Eval.Encode exposing
   , tuple3
   , list
   , listString
+  , listChar
   , listInt
   , listFloat
   , listBool
@@ -24,6 +25,7 @@ module Eval.Encode exposing
   , setChar
   , setInt
   , setFloat
+  , dict
   )
 
 
@@ -83,6 +85,11 @@ list =
 listString : List String -> Value
 listString =
   Encode.list Encode.string
+
+
+listChar : List Char -> Value
+listChar =
+  Encode.list (String.fromChar >> Encode.string)
 
 
 listInt : List Int -> Value
@@ -158,3 +165,7 @@ setInt =
 setFloat : Set Float -> Value
 setFloat =
   Encode.set Encode.float
+
+dict : Dict String Value -> Value
+dict =
+  Dict.toList >> Encode.object

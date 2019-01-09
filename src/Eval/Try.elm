@@ -9,12 +9,14 @@ module Eval.Try exposing
   , tuple3
   , list
   , listString
+  , listChar
   , listInt
   , listFloat
   , listBool
   , listList
   , listTuple2
   , listTuple3
+  , listKeyValue
   , listDict
   , array
   , arrayString
@@ -106,6 +108,25 @@ listString =
     >> Result.toMaybe
 
 
+listChar : Value -> Maybe (List Char)
+listChar =
+  let
+    resolveMaybes ls =
+      case (ls |> List.member Nothing) of
+        True ->
+          Nothing
+
+        False ->
+          ls
+            |> List.map (Maybe.withDefault '!')
+            |> Just
+
+  in
+    Decode.decodeValue (Decode.list (Decode.value |> Decode.map char))
+      >> Result.toMaybe
+      >> Maybe.andThen resolveMaybes
+
+
 listInt : Value -> Maybe (List Int)
 listInt =
   Decode.decodeValue (Decode.list Decode.int)
@@ -168,6 +189,25 @@ listTuple3 =
       >> Maybe.andThen resolveMaybes
 
 
+listKeyValue : Value -> Maybe (List (String, Value))
+listKeyValue =
+  let
+    resolveMaybes ls =
+      case (ls |> List.member Nothing) of
+        True ->
+          Nothing
+
+        False ->
+          ls
+            |> List.map (Maybe.withDefault ("", Encode.null))
+            |> Just
+
+  in
+    listList
+      >> Maybe.map (List.map TryList.keyValue)
+      >> Maybe.andThen resolveMaybes
+
+
 listDict : Value -> Maybe (List (Dict String Value))
 listDict =
   Decode.decodeValue (Decode.list (Decode.dict Decode.value))
@@ -188,22 +228,8 @@ arrayString =
 
 arrayChar : Value -> Maybe (Array Char)
 arrayChar =
-  let
-    resolveMaybes ls =
-      case (ls |> List.member Nothing) of
-        True ->
-          Nothing
-
-        False ->
-          ls
-            |> List.map (Maybe.withDefault '!')
-            |> Just
-
-  in
-    Decode.decodeValue (Decode.list (Decode.value |> Decode.map char))
-      >> Result.toMaybe
-      >> Maybe.andThen resolveMaybes
-      >> Maybe.map Array.fromList
+  listChar
+    >> Maybe.map Array.fromList
 
 
 arrayInt : Value -> Maybe (Array Int)
@@ -227,22 +253,8 @@ setString =
 
 setChar : Value -> Maybe (Set Char)
 setChar =
-  let
-    resolveMaybes ls =
-      case (ls |> List.member Nothing) of
-        True ->
-          Nothing
-
-        False ->
-          ls
-            |> List.map (Maybe.withDefault '!')
-            |> Just
-
-  in
-    Decode.decodeValue (Decode.list (Decode.value |> Decode.map char))
-      >> Result.toMaybe
-      >> Maybe.andThen resolveMaybes
-      >> Maybe.map Set.fromList
+  listChar
+    >> Maybe.map Set.fromList
 
 
 setInt : Value -> Maybe (Set Int)
