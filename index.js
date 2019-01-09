@@ -32,7 +32,7 @@ const partialExpr = (f, ...args) => data => new Promise((resolve, reject) => {
   ));
   program.ports.incoming.send({
     f,
-    args: [data].concat(args),
+    args: args.concat([data]),
   });
 });
 
@@ -45,7 +45,7 @@ const partialCall = ({ f, args }) => data => new Promise((resolve, reject) => {
   ));
   program.ports.incoming.send({
     f,
-    args: [data].concat(args),
+    args: args.concat([data]),
   });
 });
 

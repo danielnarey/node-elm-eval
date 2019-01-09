@@ -9,8 +9,8 @@ import {
 test('(+) 1 2', async (t) => {
   const exprResult = await expr('(+)', 1, 2);
   const callResult = await call({ f: '(+)', args: [1, 2] });
-  const partialExprResult = await partialExpr('(+)', 2)(1);
-  const partialCallResult = await partialCall({ f: '(+)', args: [2] })(1);
+  const partialExprResult = await partialExpr('(+)', 1)(2);
+  const partialCallResult = await partialCall({ f: '(+)', args: [1] })(2);
 
   t.true([
     exprResult,
@@ -18,6 +18,20 @@ test('(+) 1 2', async (t) => {
     partialExprResult,
     partialCallResult,
   ].every(x => x === 3));
+});
+
+test('(-) 2 1', async (t) => {
+  const exprResult = await expr('(-)', 2, 1);
+  const callResult = await call({ f: '(-)', args: [2, 1] });
+  const partialExprResult = await partialExpr('(-)', 2)(1);
+  const partialCallResult = await partialCall({ f: '(-)', args: [2] })(1);
+
+  t.true([
+    exprResult,
+    callResult,
+    partialExprResult,
+    partialCallResult,
+  ].every(x => x === 1));
 });
 
 test('(+) 1 2.0', async (t) => {
