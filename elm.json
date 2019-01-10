@@ -2,7 +2,7 @@
     "type": "application",
     "name": "visotype/elm-node-eval",
     "summary": "A port module to support JS-Elm interop with visotype/elm-eval",
-    "license": "BSD-2-Clause",
+    "license": "MIT",
     "version": "1.0.0",
     "source-directories": [
         "src"
