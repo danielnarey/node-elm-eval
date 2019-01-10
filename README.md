@@ -1,4 +1,4 @@
-# visotype/node-elm-eval
+# visotype/node-elm-eval [![Build Status](https://travis-ci.com/visotype/node-elm-eval.svg?branch=master)](https://travis-ci.com/visotype/node-elm-eval)
 
 **A promise API for executing Elm function calls in JavaScript (experimental)**
 
