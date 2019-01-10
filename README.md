@@ -36,7 +36,7 @@ Returns a promise for the JavaScript value type corresponding to the Elm functio
 The name of an Elm function. The module name should be included, as in
 `'String.length'` or `'List.append'`, but may be omitted for functions in the
 Basics module like `'always'` or `'round'`. Operators should be enclosed in
-parentheses like `'(+)'` or `(::)`.
+parentheses like `'(+)'` or `'(::)'`.
 
 **args**
 
