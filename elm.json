@@ -1,6 +1,6 @@
 {
     "type": "application",
-    "name": "visotype/node-elm-eval",
+    "name": "visotype/elm-eval-main",
     "summary": "A port module to support JS-Elm interop with visotype/elm-eval",
     "license": "MIT",
     "version": "1.0.0",
