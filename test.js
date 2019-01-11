@@ -155,6 +155,38 @@ test('always "a" "b"', async (t) => {
   t.is(result, 'a');
 });
 
+test('always.string "a" "b"', async (t) => {
+  const result = await expr('always.string', 'a', 'b');
+
+  t.is(result, 'a');
+});
+
+test('always "a" 1', async (t) => {
+  const result = await expr('always', 'a', 'b');
+
+  t.is(result, 'a');
+});
+
+test('always.string "a" 1', async (t) => {
+  await t.throwsAsync(
+    expr('always.string', 'a', 1),
+    { instanceOf: TypeError },
+  );
+});
+
+test('always.int "a" 1', async (t) => {
+  await t.throwsAsync(
+    expr('always.int', 'a', 1),
+    { instanceOf: TypeError },
+  );
+});
+
+test('always.list ["a", "b"] [3, 4]', async (t) => {
+  const result = await expr('always.list', ['a', 'b'], [1, 2]);
+
+  t.deepEqual(result, ['a', 'b']);
+});
+
 test('List.singleton "a"', async (t) => {
   const result = await expr('List.singleton', 'a');
 
