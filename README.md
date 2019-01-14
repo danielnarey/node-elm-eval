@@ -9,7 +9,7 @@ designed for use with the ES2017 async/await syntax.
 
 ## Usage
 
-```
+```javascript
 const { expr } = require('node-elm-eval');
 
 (async () => {
